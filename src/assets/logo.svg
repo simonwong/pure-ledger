@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024px" height="1024px" viewBox="0 0 120 120">
+  <defs>
+    <linearGradient id="metallic-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f7fafc;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#edf2f7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect x="10" y="10" width="100" height="100" rx="22" ry="22" fill="url(#metallic-gradient)"/>
+  <rect x="10" y="10" width="100" height="100" rx="22" ry="22" fill="url(#metal-texture)" fill-opacity="0.05"/>
+  <defs>
+    <pattern id="metal-texture" patternUnits="userSpaceOnUse" width="100" height="100">
+      <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==" x="0" y="0" width="100" height="100" />
+    </pattern>
+  </defs>
+  <g transform="translate(25, 25)">
+    <rect x="0" y="0" width="70" height="70" rx="5" ry="5" fill="#2d3748" stroke="#4a5568" stroke-width="2"/>
+    <rect x="0" y="0" width="10" height="70" rx="2" ry="2" fill="#4a5568"/>
+    <rect x="12" y="5" width="55" height="60" rx="3" ry="3" fill="#f0f4f8"/>
+    <line x1="20" y1="20" x2="60" y2="20" stroke="#a0aec0" stroke-width="1.5" />
+    <line x1="20" y1="30" x2="60" y2="30" stroke="#a0aec0" stroke-width="1.5" />
+    <line x1="20" y1="40" x2="50" y2="40" stroke="#a0aec0" stroke-width="1.5" />
+    <line x1="20" y1="50" x2="55" y2="50" stroke="#a0aec0" stroke-width="1.5" />
+    <g transform="translate(45, 45) rotate(-45)">
+      <rect x="-2" y="-15" width="4" height="30" fill="#4a5568"/>
+      <polygon points="0,-15 -2,-20 2,-20" fill="#ed8936"/>
+    </g>
+  </g>
+</svg>
