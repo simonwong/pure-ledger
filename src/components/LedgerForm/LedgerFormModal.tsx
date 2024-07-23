@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -22,9 +22,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { CreateLedger, Ledger } from "@/types";
 import { DialogProps } from "@radix-ui/react-dialog";
 import { useLedgerStore } from "@/store";
+import { Ledger } from "@/types";
 
 const FormSchema = z.object({
   name: z
@@ -38,32 +38,73 @@ const FormSchema = z.object({
 
 type FormData = z.infer<typeof FormSchema>;
 
-interface LedgerFormModalProps extends DialogProps {}
+const useLedgerFormProps = () => {
+  const [open, setOpen] = useState(false);
+
+  return {
+    props: {
+      open,
+      onOpenChange: (op: boolean) => {
+        setOpen(op);
+      },
+    },
+    onSubmit: () => {
+      setOpen(false);
+    },
+  };
+};
+
+export interface LedgerFormModalProps extends DialogProps {
+  data?: Ledger;
+  onSubmit?: () => void;
+}
 
 export const LedgerFormModal: React.FC<
   PropsWithChildren<LedgerFormModalProps>
-> = ({ children, ...props }) => {
+> = ({ children, data, onSubmit, ...props }) => {
   const addLedger = useLedgerStore((state) => state.addLedger);
+  const updateLedger = useLedgerStore((state) => state.updateLedger);
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
   });
 
-  const onSubmit = (data: FormData) => {
-    addLedger({
-      ...data,
-    });
+  const innerForm = useLedgerFormProps();
+
+  const isEdit = !!data;
+
+  useEffect(() => {
+    if (data) {
+      form.reset({ ...data });
+    }
+  }, [data]);
+
+  const handleSubmit = (formData: FormData) => {
+    if (isEdit) {
+      updateLedger({
+        ...data,
+        ...formData,
+      });
+    } else {
+      addLedger({
+        ...formData,
+      });
+    }
+    onSubmit?.();
+    innerForm.onSubmit();
   };
 
   return (
-    <Dialog {...props}>
+    <Dialog {...innerForm.props} {...props}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>新的账本</DialogTitle>
-          <DialogDescription>新建你的账本，点击保存</DialogDescription>
+          <DialogTitle>{isEdit ? "修改账本" : "新的账本"}</DialogTitle>
+          <DialogDescription>
+            {isEdit ? "修改" : "新建"}你的账本，点击保存
+          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form onSubmit={form.handleSubmit(handleSubmit)}>
             <div className="py-4 space-y-6">
               <FormField
                 control={form.control}

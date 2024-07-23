@@ -9,7 +9,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Settings2, Trash2 } from "lucide-react";
+import { FilePenLine, Settings2, Trash2 } from "lucide-react";
+import { useLedgerFormModal } from "../LedgerForm";
 
 interface BillHeaderProps {}
 
@@ -17,9 +18,14 @@ const BillHeader: React.FC<BillHeaderProps> = () => {
   const removeLedger = useLedgerStore((state) => state.removeLedger);
   const ledger = useCurrentLedger();
 
+  const { openLedgerFormModal, ledgerFormModal } = useLedgerFormModal();
+
   return (
     <div className="flex items-center justify-between space-y-2">
-      <h2 className="text-3xl font-bold tracking-tight">{ledger?.name}</h2>
+      <div className="space-y-2">
+        <h2 className="text-3xl font-bold tracking-tight">{ledger?.name}</h2>
+        {ledger?.remark && <p>{ledger?.remark}</p>}
+      </div>
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Settings2 />
@@ -27,14 +33,18 @@ const BillHeader: React.FC<BillHeaderProps> = () => {
         <DropdownMenuContent>
           <DropdownMenuItem
             onClick={() => {
-              console.log("1", 1);
+              openLedgerFormModal({
+                data: ledger!,
+              });
             }}
           >
-            编辑
+            <FilePenLine className="mr-2 h-4 w-4" />
+            <span>编辑</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuLabel>危险操作</DropdownMenuLabel>
           <DropdownMenuItem
+            className="focus:bg-red-500"
             onClick={() => {
               dialog.confirm({
                 title: "是否确认删除",
@@ -52,6 +62,7 @@ const BillHeader: React.FC<BillHeaderProps> = () => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+      {ledgerFormModal}
     </div>
   );
 };
