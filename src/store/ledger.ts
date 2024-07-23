@@ -58,6 +58,7 @@ export const useLedgerStore = create<LedgerState>()(
           ledgerList: [...get().ledgerList].filter(
             (item) => item.id !== ledger.id
           ),
+          currentSelectId: null,
         }),
     }),
     {

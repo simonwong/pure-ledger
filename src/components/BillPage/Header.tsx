@@ -1,4 +1,4 @@
-import { useCurrentLedger } from "@/store/ledger";
+import { useCurrentLedger, useLedgerStore } from "@/store/ledger";
 import * as React from "react";
 import { dialog } from "@/components/enhance/Dialog";
 import {
@@ -14,6 +14,7 @@ import { Settings2, Trash2 } from "lucide-react";
 interface BillHeaderProps {}
 
 const BillHeader: React.FC<BillHeaderProps> = () => {
+  const removeLedger = useLedgerStore((state) => state.removeLedger);
   const ledger = useCurrentLedger();
 
   return (
@@ -39,7 +40,9 @@ const BillHeader: React.FC<BillHeaderProps> = () => {
                 title: "是否确认删除",
                 content: "危险操作哦，删除后这个账本的数据将无法恢复",
                 onConfirm: () => {
-                  console.log("1111", 1111);
+                  if (ledger) {
+                    removeLedger(ledger);
+                  }
                 },
               });
             }}

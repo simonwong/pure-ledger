@@ -9,21 +9,18 @@ interface LedgerMenuProps {
 }
 
 const LedgerMenu: React.FC<LedgerMenuProps> = ({ className, ...props }) => {
-  const { ledgerList, currentSelectId, switchSelect, addLedger } =
-    useLedgerStore();
+  const { ledgerList, currentSelectId, switchSelect } = useLedgerStore();
+
+  if (ledgerList.length === 0) {
+    return null;
+  }
 
   return (
     <div>
-      <LedgerFormModal onConfirm={addLedger}>
+      <LedgerFormModal>
         <Button className="mb-4">新建一个账本</Button>
       </LedgerFormModal>
-      <nav
-        className={cn(
-          "flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1",
-          className
-        )}
-        {...props}
-      >
+      <nav className={cn("flex-col", className)} {...props}>
         {ledgerList.map((item) => (
           <div
             key={item.id}

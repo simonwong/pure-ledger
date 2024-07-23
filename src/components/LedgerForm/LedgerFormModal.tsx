@@ -24,6 +24,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { CreateLedger, Ledger } from "@/types";
 import { DialogProps } from "@radix-ui/react-dialog";
+import { useLedgerStore } from "@/store";
 
 const FormSchema = z.object({
   name: z
@@ -37,19 +38,18 @@ const FormSchema = z.object({
 
 type FormData = z.infer<typeof FormSchema>;
 
-interface LedgerFormModalProps extends DialogProps {
-  onConfirm: (data: CreateLedger | Ledger) => void;
-}
+interface LedgerFormModalProps extends DialogProps {}
 
 export const LedgerFormModal: React.FC<
   PropsWithChildren<LedgerFormModalProps>
-> = ({ onConfirm, children, ...props }) => {
+> = ({ children, ...props }) => {
+  const addLedger = useLedgerStore((state) => state.addLedger);
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
   });
 
   const onSubmit = (data: FormData) => {
-    onConfirm({
+    addLedger({
       ...data,
     });
   };
