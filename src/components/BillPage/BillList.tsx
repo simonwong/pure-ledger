@@ -8,19 +8,30 @@ import {
 } from "@/components/ui/card";
 import { BillType } from "@/types";
 import { useBillList } from "@/store/bill";
+import { Button } from "@/components/ui/button";
+import { BillFormModal } from "@/components/BillForm";
+import { DollarSign, HandCoins } from "lucide-react";
 
 interface BillListProps {}
 
 const BillList: React.FC<BillListProps> = () => {
-  const billList = useBillList();
-  if (!billList) {
-    return null;
-  }
+  const billList = useBillList() || [];
+
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="relative">
         <CardTitle>账单列表</CardTitle>
         <CardDescription>总共 {billList.length} 条账单</CardDescription>
+        <div className="absolute top-6 right-6 space-x-2">
+          <BillFormModal defaultType={BillType.EXPEND}>
+            <Button size="sm" variant="secondary" className="hover:bg-primary">
+              <HandCoins className="mr-2 h-4 w-4" /> 添加支出账单
+            </Button>
+          </BillFormModal>
+          <Button size="sm" variant="secondary" className="hover:bg-primary">
+            <DollarSign className="mr-2 h-4 w-4" /> 添加收入账单
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="space-y-8 min-w-96">

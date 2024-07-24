@@ -5,7 +5,7 @@ export enum BillType {
   INCOME = 2,
 }
 
-export interface NewBill {
+export interface CreateBill {
   /** 账单名称 */
   name: string;
   /** 账单类型 */
@@ -14,12 +14,12 @@ export interface NewBill {
   amount: number;
   /** 分批次到账金额 */
   amountBatch?: number[];
-  /** 创建时间 */
-  createAt: string;
   /** 备注 */
   remark?: string;
 }
 
-export interface Bill extends NewBill {
+export interface Bill extends CreateBill {
   id: string;
+  /** 创建时间 */
+  createAt: string;
 }

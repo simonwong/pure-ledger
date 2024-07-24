@@ -19,6 +19,11 @@ export const useLedgerStore = create<LedgerState>()(
     (set, get) => ({
       currentSelectId: null,
       ledgerList: [],
+      switchSelect: (id: string) => {
+        set({
+          currentSelectId: id,
+        });
+      },
       addLedger: (ledger) => {
         const newId = uuidv4();
         set({
@@ -27,15 +32,10 @@ export const useLedgerStore = create<LedgerState>()(
             {
               ...ledger,
               id: newId,
-              createAt: new Date().toLocaleDateString(),
+              createAt: new Date().toLocaleString(),
             },
           ],
           currentSelectId: newId,
-        });
-      },
-      switchSelect: (id: string) => {
-        set({
-          currentSelectId: id,
         });
       },
       updateLedger: (ledger) => {
