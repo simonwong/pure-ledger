@@ -4,6 +4,7 @@ import { create } from "zustand";
 import { v4 as uuidv4 } from "uuid";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { useLedgerStore } from "./ledger";
+import dayjs from "dayjs";
 
 interface BillState {
   billData: BillData;
@@ -32,7 +33,6 @@ export const useBillStore = create<BillState>()(
                 {
                   ...bill,
                   id: uuidv4(),
-                  createAt: new Date().toLocaleString(),
                 },
               ],
             },
@@ -88,5 +88,7 @@ export const useBillList = () => {
   const currentSelectId = useLedgerStore((state) => state.currentSelectId);
   const billData = useBillStore((state) => state.billData);
 
-  return getBillList(billData, currentSelectId);
+  return getBillList(billData, currentSelectId)?.sort((aBill, bBill) =>
+    dayjs(aBill.createAt).isBefore(bBill.createAt) ? 1 : -1
+  );
 };

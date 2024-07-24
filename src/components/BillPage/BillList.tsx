@@ -18,7 +18,7 @@ const BillList: React.FC<BillListProps> = () => {
   const billList = useBillList() || [];
 
   return (
-    <Card>
+    <Card className="max-w-3xl">
       <CardHeader className="relative">
         <CardTitle>账单列表</CardTitle>
         <CardDescription>总共 {billList.length} 条账单</CardDescription>
@@ -28,15 +28,17 @@ const BillList: React.FC<BillListProps> = () => {
               <HandCoins className="mr-2 h-4 w-4" /> 添加支出账单
             </Button>
           </BillFormModal>
-          <Button size="sm" variant="secondary" className="hover:bg-primary">
-            <DollarSign className="mr-2 h-4 w-4" /> 添加收入账单
-          </Button>
+          <BillFormModal defaultType={BillType.INCOME}>
+            <Button size="sm" variant="secondary" className="hover:bg-primary">
+              <DollarSign className="mr-2 h-4 w-4" /> 添加收入账单
+            </Button>
+          </BillFormModal>
         </div>
       </CardHeader>
       <CardContent>
         <div className="space-y-8 min-w-96">
           {billList.map((item) => (
-            <div className="flex items-center space-x-12">
+            <div key={item.id} className="flex items-center space-x-12">
               <div className="flex-1 space-y-1">
                 <p className="text-sm font-medium leading-none">{item.name}</p>
                 <p className="text-sm text-muted-foreground">{item.remark}</p>

@@ -17,17 +17,17 @@ const BillSummary: React.FC<BillSummaryProps> = () => {
 
       billList.forEach((bill) => {
         if (bill.type === BillType.EXPEND) {
-          expend.plus(bill.amount);
+          expend = expend.plus(bill.amount);
         }
         if (bill.type === BillType.INCOME) {
-          income.plus(bill.amount);
+          income = income.plus(bill.amount);
         }
       });
 
       return {
         expend: expend.toFixed(2),
-        income: expend.toFixed(2),
-        balance: expend.plus(income).toFixed(2),
+        income: income.toFixed(2),
+        balance: income.minus(expend).toFixed(2),
       };
     }
     return {

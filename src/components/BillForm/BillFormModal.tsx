@@ -14,8 +14,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useBillStore } from "@/store";
-import { BillType, Ledger } from "@/types";
+import { Bill, BillType } from "@/types";
 import SwitchType from "./SwitchType";
+import DatePicker from "../enhance/DatePicker";
+import { dateToString } from "../enhance/DatePicker/utils";
 
 const FormSchema = z.object({
   name: z
@@ -32,13 +34,14 @@ const FormSchema = z.object({
     .min(0, "最小金额填0")
     .safe("超出金额限制"),
   type: z.nativeEnum(BillType),
+  createAt: z.date(),
   remark: z.optional(z.string()),
 });
 
 type FormData = z.infer<typeof FormSchema>;
 
 export interface BillFormModalProps extends DialogProps {
-  data?: Ledger;
+  data?: Bill;
   onSubmit?: () => void;
   defaultType: BillType;
 }
@@ -54,6 +57,9 @@ export const BillFormModal: React.FC<PropsWithChildren<BillFormModalProps>> = ({
   const updateBill = useBillStore((state) => state.updateBill);
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
+    defaultValues: {
+      createAt: new Date(),
+    },
   });
 
   const type = form.watch("type");
@@ -61,14 +67,18 @@ export const BillFormModal: React.FC<PropsWithChildren<BillFormModalProps>> = ({
   const isEdit = !!data;
 
   const handleSubmit = (formData: FormData) => {
+    const submitData = {
+      ...formData,
+      createAt: dateToString(formData.createAt),
+    };
     if (isEdit) {
       updateBill({
         ...data,
-        ...formData,
+        ...submitData,
       });
     } else {
       addBill({
-        ...formData,
+        ...submitData,
       });
     }
     onSubmit?.();
@@ -87,9 +97,9 @@ export const BillFormModal: React.FC<PropsWithChildren<BillFormModalProps>> = ({
       onOpenChange={(op) => {
         if (op) {
           if (data) {
-            form.reset({ type: defaultType, ...data });
+            form.reset({ ...data, createAt: new Date(data.createAt) });
           } else {
-            form.reset({ type: defaultType });
+            form.reset({ type: defaultType, createAt: new Date() });
           }
         }
       }}
@@ -136,7 +146,17 @@ export const BillFormModal: React.FC<PropsWithChildren<BillFormModalProps>> = ({
                     }}
                   />
                 </FormControl>
-                <FormDescription>看看你{typeText}多少金额</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="createAt"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>时间</FormLabel>
+                <DatePicker {...field} />
                 <FormMessage />
               </FormItem>
             )}
@@ -150,7 +170,6 @@ export const BillFormModal: React.FC<PropsWithChildren<BillFormModalProps>> = ({
                 <FormControl>
                   <Input placeholder="请输入备注" {...field} />
                 </FormControl>
-                <FormDescription>进行一些备注，方便你记忆</FormDescription>
                 <FormMessage />
               </FormItem>
             )}

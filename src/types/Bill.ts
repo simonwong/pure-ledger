@@ -16,10 +16,10 @@ export interface CreateBill {
   amountBatch?: number[];
   /** 备注 */
   remark?: string;
+  /** 创建时间 */
+  createAt: string;
 }
 
 export interface Bill extends CreateBill {
   id: string;
-  /** 创建时间 */
-  createAt: string;
 }
