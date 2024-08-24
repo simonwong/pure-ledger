@@ -7,14 +7,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { BillType } from "@/types";
-import { useBillList } from "@/store/bill";
+import { useBillList, useBillStore } from "@/store/bill";
 import { Button } from "@/components/ui/button";
 import { BillFormModal } from "@/components/BillForm";
-import { DollarSign, HandCoins } from "lucide-react";
+import { DollarSign, EllipsisVertical, HandCoins } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 interface BillListProps {}
 
 const BillList: React.FC<BillListProps> = () => {
+  const removeBill = useBillStore((state) => state.removeBill);
   const billList = useBillList() || [];
 
   return (
@@ -49,6 +57,22 @@ const BillList: React.FC<BillListProps> = () => {
               </div>
               <div className="text-sm text-muted-foreground">
                 {item.createAt}
+              </div>
+              <div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      <EllipsisVertical size={16} />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-9">
+                    <DropdownMenuGroup>
+                      <DropdownMenuItem onClick={() => removeBill(item)}>
+                        删除
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
           ))}
