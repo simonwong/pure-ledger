@@ -12,13 +12,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useBillStore, useLedgerStore } from "@/store";
+import { useLedgerStore } from "@/store";
 import { Bill, BillType, CreateBill } from "@/types";
 import SwitchType from "./SwitchType";
 import DatePicker from "../enhance/DatePicker";
 import { dateToString } from "../enhance/DatePicker/utils";
 import FileUploader from "../FileUploader";
 import { saveFilesByLedgerId } from "@/lib/storageFile";
+import { useAddBill, useUpdateBill } from "@/store/actionSet";
 
 const FormSchema = z.object({
   name: z
@@ -56,8 +57,9 @@ export const BillFormModal: React.FC<PropsWithChildren<BillFormModalProps>> = ({
   ...props
 }) => {
   const currentSelectId = useLedgerStore((state) => state.currentSelectId)!;
-  const addBill = useBillStore((state) => state.addBill);
-  const updateBill = useBillStore((state) => state.updateBill);
+  const addBill = useAddBill();
+  const updateBill = useUpdateBill();
+
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
