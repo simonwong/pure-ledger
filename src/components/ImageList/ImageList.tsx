@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { XIcon } from "lucide-react";
-import { getFilePath } from "@/lib/storageFile";
+import { getStorageFilePath } from "@/lib/storageFile";
 import ImagePreview from "./ImagePreview";
 
 interface ImageListProps {
@@ -20,7 +20,7 @@ const getUrlStringList = async (files?: (string | File)[]) => {
     if (item instanceof File) {
       res.push(URL.createObjectURL(item));
     } else {
-      const path = await getFilePath(item);
+      const path = await getStorageFilePath(item);
       res.push(path);
     }
   }

@@ -3,6 +3,8 @@ import {
   exists,
   createDir,
   writeBinaryFile,
+  removeFile,
+  removeDir,
 } from "@tauri-apps/api/fs";
 import { appLocalDataDir, join } from "@tauri-apps/api/path";
 import { convertFileSrc } from "@tauri-apps/api/tauri";
@@ -58,8 +60,37 @@ export const saveFilesByLedgerId = async (files: File[], ledgerId: string) => {
   return fileNames;
 };
 
-export const getFilePath = async (fileName: string) => {
+export const getStorageFilePath = async (fileName: string) => {
   let localDataDir = await appLocalDataDir();
   const filePath = await join(localDataDir, "files", fileName);
   return convertFileSrc(filePath);
+};
+
+export const removeStorageFoldByLedgerId = async (ledgerId: string) => {
+  const filePath = await join("files", ledgerId);
+  const isExist = await exists(filePath, {
+    dir: BaseDirectory.AppLocalData,
+  });
+  if (isExist) {
+    await removeDir(filePath, {
+      dir: BaseDirectory.AppLocalData,
+      recursive: true,
+    });
+  }
+};
+
+export const removeStorageFile = async (fileName: string) => {
+  const filePath = await join("files", fileName);
+  const isExist = await exists(filePath, {
+    dir: BaseDirectory.AppLocalData,
+  });
+  if (isExist) {
+    await removeFile(filePath, { dir: BaseDirectory.AppLocalData });
+  }
+};
+
+export const removeStorageFileBatch = (fileName: string[]) => {
+  fileName.forEach((file) => {
+    removeStorageFile(file);
+  });
 };

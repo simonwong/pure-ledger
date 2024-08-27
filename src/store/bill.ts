@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { useLedgerStore } from "./ledger";
 import dayjs from "dayjs";
+import { removeStorageFileBatch } from "@/lib/storageFile";
 
 interface BillState {
   billData: BillData;
@@ -65,9 +66,11 @@ export const useBillStore = create<BillState>()(
       removeBill: (bill) => {
         const ledgerId = useLedgerStore.getState().currentSelectId;
         if (ledgerId) {
+          const remarkFiles = bill.remarkFiles;
           const billList = (getBillList(get().billData, ledgerId) || []).filter(
             (item) => item.id !== bill.id
           );
+          remarkFiles && removeStorageFileBatch(remarkFiles);
           set({
             billData: {
               ...get().billData,

@@ -4,6 +4,7 @@ import { create } from "zustand";
 import { v4 as uuidv4 } from "uuid";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { useMemo } from "react";
+import { removeStorageFoldByLedgerId } from "@/lib/storageFile";
 
 interface LedgerState {
   currentSelectId: string | null;
@@ -53,13 +54,15 @@ export const useLedgerStore = create<LedgerState>()(
           ledgerList: newList,
         });
       },
-      removeLedger: (ledger) =>
+      removeLedger: (ledger) => {
         set({
           ledgerList: [...get().ledgerList].filter(
             (item) => item.id !== ledger.id
           ),
           currentSelectId: null,
-        }),
+        });
+        removeStorageFoldByLedgerId(ledger.id);
+      },
     }),
     {
       name: StorageKey.Ledger,
