@@ -6,18 +6,19 @@ import { DialogProps } from "@radix-ui/react-dialog";
 import { FormModal } from "@/components/enhance/Modal";
 import {
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useBillStore } from "@/store";
-import { Bill, BillType } from "@/types";
+import { useBillStore, useLedgerStore } from "@/store";
+import { Bill, BillType, CreateBill } from "@/types";
 import SwitchType from "./SwitchType";
 import DatePicker from "../enhance/DatePicker";
 import { dateToString } from "../enhance/DatePicker/utils";
+import FileUploader from "../FileUploader";
+import { saveFilesByLedgerId } from "@/lib/storageFile";
 
 const FormSchema = z.object({
   name: z
@@ -36,6 +37,7 @@ const FormSchema = z.object({
   type: z.nativeEnum(BillType),
   createAt: z.date(),
   remark: z.optional(z.string()),
+  files: z.array(z.instanceof(File)).optional(),
 });
 
 type FormData = z.infer<typeof FormSchema>;
@@ -53,6 +55,7 @@ export const BillFormModal: React.FC<PropsWithChildren<BillFormModalProps>> = ({
   defaultType,
   ...props
 }) => {
+  const currentSelectId = useLedgerStore((state) => state.currentSelectId)!;
   const addBill = useBillStore((state) => state.addBill);
   const updateBill = useBillStore((state) => state.updateBill);
   const form = useForm<FormData>({
@@ -66,9 +69,15 @@ export const BillFormModal: React.FC<PropsWithChildren<BillFormModalProps>> = ({
 
   const isEdit = !!data;
 
-  const handleSubmit = (formData: FormData) => {
-    const submitData = {
-      ...formData,
+  const handleSubmit = async (formData: FormData) => {
+    const { files, ...resetFormData } = formData;
+    let filePaths: string[] = [];
+    if (files) {
+      filePaths = await saveFilesByLedgerId(files, currentSelectId);
+    }
+    const submitData: CreateBill = {
+      ...resetFormData,
+      remarkFiles: filePaths,
       createAt: dateToString(formData.createAt),
     };
     if (isEdit) {
@@ -103,77 +112,104 @@ export const BillFormModal: React.FC<PropsWithChildren<BillFormModalProps>> = ({
           }
         }
       }}
+      contentClassName="sm:max-w-[725px]"
       content={
-        <div className="py-4 space-y-6">
-          <SwitchType
-            value={type}
-            onChange={(val) => {
-              form.setValue("type", val);
-            }}
-          />
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>账单名称</FormLabel>
-                <FormControl>
-                  <Input placeholder="请输入账单名称" {...field} />
-                </FormControl>
-                <FormDescription>这是你展示的账单名称</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="amount"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{typeText}金额</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="请输入金额"
-                    {...field}
-                    onChange={(event) => {
-                      const val = event.target.value;
-                      if (val === "") {
-                        field.onChange(undefined);
-                      } else {
-                        field.onChange(+val);
-                      }
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="createAt"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>时间</FormLabel>
-                <DatePicker {...field} />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="remark"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>备注</FormLabel>
-                <FormControl>
-                  <Input placeholder="请输入备注" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <div className="py-4 space-y-4">
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <SwitchType
+                value={type}
+                onChange={(val) => {
+                  form.setValue("type", val);
+                }}
+              />
+            </div>
+            <div className="flex-1"></div>
+          </div>
+          <div className="flex gap-4">
+            <div className="flex-1 space-y-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>账单名称</FormLabel>
+                    <FormControl>
+                      <Input placeholder="请输入账单名称" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="amount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{typeText}金额</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder="请输入金额"
+                        {...field}
+                        onChange={(event) => {
+                          const val = event.target.value;
+                          if (val === "") {
+                            field.onChange(undefined);
+                          } else {
+                            field.onChange(+val);
+                          }
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="createAt"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>时间</FormLabel>
+                    <DatePicker {...field} />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="flex-1 space-y-4">
+              <FormField
+                control={form.control}
+                name="remark"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>备注</FormLabel>
+                    <FormControl>
+                      <Input placeholder="请输入备注" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="files"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>文件</FormLabel>
+                    <FormControl>
+                      <FileUploader
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
         </div>
       }
       {...props}

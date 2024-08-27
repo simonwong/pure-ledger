@@ -12,6 +12,8 @@
     "tauri:build-x86_64-apple": "tauri build --target x86_64-apple-darwin"
   },
   "dependencies": {
+    "@easy-shadcn/react": "^0.0.1",
+    "@easy-shadcn/utils": "^0.0.1",
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-alert-dialog": "^1.1.1",
     "@radix-ui/react-dialog": "^1.1.1",

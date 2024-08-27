@@ -12,6 +12,8 @@ import {
 import Button from "@/components/enhance/Button";
 import { Form } from "@/components/ui/form";
 import { FieldValues, UseFormReturn } from "react-hook-form";
+import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
 
 export interface FormModalProps<T extends FieldValues = FieldValues>
   extends DialogProps {
@@ -21,6 +23,7 @@ export interface FormModalProps<T extends FieldValues = FieldValues>
   content?: ReactNode;
   onConfirm?: (formData: T) => Promise<void> | void;
   form: UseFormReturn<T, any, undefined>;
+  contentClassName?: string;
 }
 
 const FormModal = <T extends FieldValues = FieldValues>({
@@ -32,13 +35,20 @@ const FormModal = <T extends FieldValues = FieldValues>({
   onConfirm,
   form,
   onOpenChange,
+  contentClassName,
   ...props
 }: FormModalProps<T>) => {
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleConfirm = async (formData: T) => {
-    await onConfirm?.(formData);
-    setOpen(false);
+    setLoading(true);
+    try {
+      await onConfirm?.(formData);
+      setOpen(false);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -51,7 +61,7 @@ const FormModal = <T extends FieldValues = FieldValues>({
       {...props}
     >
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className={cn("sm:max-w-[425px]", contentClassName)}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{desc}</DialogDescription>
@@ -60,7 +70,10 @@ const FormModal = <T extends FieldValues = FieldValues>({
           <form onSubmit={form.handleSubmit(handleConfirm)}>
             {content}
             <DialogFooter>
-              <Button type="submit">保存</Button>
+              <Button disabled={loading} type="submit">
+                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                保存
+              </Button>
             </DialogFooter>
           </form>
         </Form>
