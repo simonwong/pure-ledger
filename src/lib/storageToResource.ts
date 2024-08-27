@@ -3,8 +3,8 @@ import {
   exists,
   writeTextFile,
   readTextFile,
-  createDir,
-} from "@tauri-apps/api/fs";
+  mkdir,
+} from "@tauri-apps/plugin-fs";
 import { StateStorage } from "zustand/middleware";
 
 const storageFoldPath = "storage";
@@ -34,23 +34,23 @@ const getFilePath = (type: StorageKey) => {
 
 const preflightCheckStorageFold = async (type: StorageKey) => {
   const isExistFold = await exists(storageFoldPath, {
-    dir: BaseDirectory.AppLocalData,
+    baseDir: BaseDirectory.AppLocalData,
   });
 
   if (!isExistFold) {
-    await createDir(storageFoldPath, {
-      dir: BaseDirectory.AppLocalData,
+    await mkdir(storageFoldPath, {
+      baseDir: BaseDirectory.AppLocalData,
       recursive: true,
     });
   }
 
   const isExistFile = await exists(getFilePath(type), {
-    dir: BaseDirectory.AppLocalData,
+    baseDir: BaseDirectory.AppLocalData,
   });
 
   if (!isExistFile) {
     await writeTextFile(getFilePath(type), "null", {
-      dir: BaseDirectory.AppLocalData,
+      baseDir: BaseDirectory.AppLocalData,
     });
   }
 };
@@ -58,15 +58,16 @@ const preflightCheckStorageFold = async (type: StorageKey) => {
 export const saveStorageData = async (type: StorageKey, dataStr: string) => {
   await preflightCheckStorageFold(type);
   await writeTextFile(getFilePath(type), dataStr, {
-    dir: BaseDirectory.AppLocalData,
+    baseDir: BaseDirectory.AppLocalData,
   });
 };
 
 export const getStorageData = async (type: StorageKey) => {
   await preflightCheckStorageFold(type);
   const dataStr = await readTextFile(getFilePath(type), {
-    dir: BaseDirectory.AppLocalData,
+    baseDir: BaseDirectory.AppLocalData,
   });
+  console.log("dataStr", dataStr);
   return dataStr;
 };
 

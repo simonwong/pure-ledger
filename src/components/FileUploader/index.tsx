@@ -20,23 +20,6 @@ const FileUploader: React.FC<FileUploaderProps> = ({
 
   const handleClickUpload = async () => {
     fileInputRef.current?.click();
-    // const selected = await open({
-    //   multiple: true,
-    //   filters: [
-    //     {
-    //       name: "Image",
-    //       extensions: ["png", "jpeg", "jpg", "svg"],
-    //     },
-    //   ],
-    // });
-    // console.log("selected", selected);
-    // if (Array.isArray(selected)) {
-    //   // user selected multiple files
-    // } else if (selected === null) {
-    //   // user cancelled the selection
-    // } else {
-    //   // user selected a single file
-    // }
   };
 
   const handleChangeFileUpload: React.ChangeEventHandler<
