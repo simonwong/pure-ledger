@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { BillType } from "@/types";
-import { useBillList, useBillStore } from "@/store/bill";
+import { useBillList } from "@/store/bill";
 import { Button } from "@/components/ui/button";
 import { BillFormModal } from "@/components/BillForm";
 import { DollarSign, EllipsisVertical, HandCoins } from "lucide-react";
@@ -19,11 +19,12 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { ImageList } from "../ImageList";
+import { useRemoveBill } from "@/store/actionSet";
 
 interface BillListProps {}
 
 const BillList: React.FC<BillListProps> = () => {
-  const removeBill = useBillStore((state) => state.removeBill);
+  const removeBill = useRemoveBill();
   const billList = useBillList() || [];
 
   return (

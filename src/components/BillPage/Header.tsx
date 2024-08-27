@@ -1,4 +1,4 @@
-import { useCurrentLedger, useLedgerStore } from "@/store/ledger";
+import { useCurrentLedger } from "@/store/ledger";
 import * as React from "react";
 import { dialog } from "@/components/enhance/Dialog";
 import {
@@ -11,11 +11,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { FilePenLine, Settings2, Trash2 } from "lucide-react";
 import { useLedgerFormModal } from "../LedgerForm";
+import { useRemoveLedger } from "@/store/actionSet";
 
 interface BillHeaderProps {}
 
 const BillHeader: React.FC<BillHeaderProps> = () => {
-  const removeLedger = useLedgerStore((state) => state.removeLedger);
+  const removeLedger = useRemoveLedger();
   const ledger = useCurrentLedger();
 
   const { openLedgerFormModal, ledgerFormModal } = useLedgerFormModal();
