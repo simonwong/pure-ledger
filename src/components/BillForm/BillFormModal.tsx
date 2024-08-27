@@ -38,7 +38,7 @@ const FormSchema = z.object({
   type: z.nativeEnum(BillType),
   createAt: z.date(),
   remark: z.optional(z.string()),
-  files: z.array(z.instanceof(File)).optional(),
+  remarkFiles: z.array(z.string()).optional(),
 });
 
 type FormData = z.infer<typeof FormSchema>;
@@ -72,14 +72,8 @@ export const BillFormModal: React.FC<PropsWithChildren<BillFormModalProps>> = ({
   const isEdit = !!data;
 
   const handleSubmit = async (formData: FormData) => {
-    const { files, ...resetFormData } = formData;
-    let filePaths: string[] = [];
-    if (files) {
-      filePaths = await saveFilesByLedgerId(files, currentSelectId);
-    }
     const submitData: CreateBill = {
-      ...resetFormData,
-      remarkFiles: filePaths,
+      ...formData,
       createAt: dateToString(formData.createAt),
     };
     if (isEdit) {
@@ -196,12 +190,13 @@ export const BillFormModal: React.FC<PropsWithChildren<BillFormModalProps>> = ({
               />
               <FormField
                 control={form.control}
-                name="files"
+                name="remarkFiles"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>文件</FormLabel>
                     <FormControl>
                       <FileUploader
+                        ledgerId={currentSelectId}
                         value={field.value}
                         onChange={field.onChange}
                       />

@@ -1,14 +1,21 @@
 import { Button } from "@easy-shadcn/react";
-import { UploadIcon } from "lucide-react";
+import { Loader2Icon, UploadIcon } from "lucide-react";
 import * as React from "react";
 import { ImageList } from "@/components/ImageList";
+import { removeStorageFile, saveFileByLedgerId } from "@/lib/storageFile";
 
 interface FileUploaderProps {
-  value?: File[];
-  onChange?: (files: File[]) => void;
+  ledgerId: string;
+  value?: string[];
+  onChange?: (filePaths: string[]) => void;
 }
 
-const FileUploader: React.FC<FileUploaderProps> = ({ value, onChange }) => {
+const FileUploader: React.FC<FileUploaderProps> = ({
+  ledgerId,
+  value,
+  onChange,
+}) => {
+  const [loading, setLoading] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleClickUpload = async () => {
@@ -32,25 +39,43 @@ const FileUploader: React.FC<FileUploaderProps> = ({ value, onChange }) => {
     // }
   };
 
-  const handleChangeFileUpload: React.ChangeEventHandler<HTMLInputElement> = (
-    e
-  ) => {
+  const handleChangeFileUpload: React.ChangeEventHandler<
+    HTMLInputElement
+  > = async (e) => {
     if (e.target.files) {
       const file = e.target.files[0];
-      onChange?.([...(value || []), file]);
+
+      setLoading(true);
+      try {
+        const path = await saveFileByLedgerId(file, ledgerId);
+        onChange?.([...(value || []), path]);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
   const handleRemoveFile = (idx: number) => {
-    let files = value ? [...value] : [];
-    files.splice(idx, 1);
-    onChange?.(files);
+    const path = value?.[idx];
+    let filePaths = value ? [...value] : [];
+    filePaths.splice(idx, 1);
+    onChange?.(filePaths);
+    path && removeStorageFile(path);
   };
 
   return (
     <div>
-      <Button variant="outline" type="button" onClick={handleClickUpload}>
-        <UploadIcon className="mr-2 h-4 w-4" />
+      <Button
+        disabled={loading}
+        variant="outline"
+        type="button"
+        onClick={handleClickUpload}
+      >
+        {loading ? (
+          <Loader2Icon className="mr-2 h-4 w-4" />
+        ) : (
+          <UploadIcon className="mr-2 h-4 w-4" />
+        )}
         点击上传文件
       </Button>
       <input
