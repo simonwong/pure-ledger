@@ -2,34 +2,34 @@
   "build": {
     "beforeDevCommand": "pnpm dev",
     "beforeBuildCommand": "pnpm build",
-    "devPath": "http://localhost:1420",
-    "distDir": "../dist"
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:1420"
   },
-  "package": {
-    "productName": "Pure Ledger",
-    "version": "0.0.0"
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/512x512.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
   },
-  "tauri": {
-    "allowlist": {
-      "all": false,
-      "shell": {
-        "all": false,
-        "open": true
+  "productName": "Pure Ledger",
+  "version": "0.0.0",
+  "identifier": "com.simonwong.pureledger",
+  "plugins": {},
+  "app": {
+    "security": {
+      "assetProtocol": {
+        "scope": [
+          "$APPDATA/**"
+        ],
+        "enable": true
       },
-      "fs": {
-        "all": true,
-        "scope": ["$APPDATA/**", "$RESOURCE/**"]
-      },
-      "path": {
-        "all": true
-      },
-      "dialog": {
-        "all": true
-      },
-      "protocol": {
-        "asset": true,
-        "assetScope": ["$APPDATA/**"]
-      }
+      "csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost; connect-src ipc: http://ipc.localhost"
     },
     "windows": [
       {
@@ -37,22 +37,6 @@
         "width": 1400,
         "height": 900
       }
-    ],
-    "security": {
-      "csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost"
-    },
-    "bundle": {
-      "active": true,
-      "targets": "all",
-      "identifier": "com.simonwong.pureledger",
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/512x512.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ]
-    }
+    ]
   }
 }
