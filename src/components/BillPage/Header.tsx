@@ -1,6 +1,6 @@
 import { useCurrentLedger } from "@/store/ledger";
 import * as React from "react";
-import { dialog } from "@/components/enhance/Dialog";
+import { alertModalAction } from "@easy-shadcn/react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -47,7 +47,7 @@ const BillHeader: React.FC<BillHeaderProps> = () => {
           <DropdownMenuItem
             className="focus:bg-red-500"
             onClick={() => {
-              dialog.confirm({
+              alertModalAction.confirm({
                 title: "是否确认删除",
                 content: "危险操作哦，删除后这个账本的数据将无法恢复",
                 onConfirm: () => {
