@@ -1,7 +1,6 @@
 {
   "name": "pure-ledger",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -29,6 +28,7 @@
     "@tauri-apps/plugin-dialog": "2.0.0-rc.0",
     "@tauri-apps/plugin-fs": "2.0.0-rc.0",
     "@tauri-apps/plugin-shell": "2.0.0-rc.0",
+    "@tauri-apps/plugin-updater": "2.0.0-rc.0",
     "bignumber.js": "^9.1.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
