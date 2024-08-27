@@ -18,6 +18,8 @@ export interface CreateBill {
   remark?: string;
   /** 创建时间 */
   createAt: string;
+  /** 备注文件缓存 */
+  remarkFiles?: string[];
 }
 
 export interface Bill extends CreateBill {

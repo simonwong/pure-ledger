@@ -18,6 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { ImageList } from "../ImageList";
 
 interface BillListProps {}
 
@@ -51,6 +52,7 @@ const BillList: React.FC<BillListProps> = () => {
                 <p className="text-sm font-medium leading-none">{item.name}</p>
                 <p className="text-sm text-muted-foreground">{item.remark}</p>
               </div>
+              <div>{<ImageList data={item.remarkFiles} />}</div>
               <div className="ml-auto font-medium">
                 {item.type === BillType.EXPEND ? "-" : "+"}
                 {item.amount}
