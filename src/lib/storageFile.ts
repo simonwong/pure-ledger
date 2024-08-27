@@ -40,6 +40,21 @@ const preflightCheckStorageFold = async (ledgerId: string) => {
   }
 };
 
+export const saveFileByLedgerId = async (file: File, ledgerId: string) => {
+  await preflightCheckStorageFold(ledgerId);
+
+  const realFileName = `${uuidv4()}.${file.name.split(".").at(-1)}`;
+
+  const arrayBuffer = await file.arrayBuffer();
+  await writeBinaryFile(
+    `${storageFilesPath}/${ledgerId}/${realFileName}`,
+    new Uint8Array(arrayBuffer),
+    { dir: BaseDirectory.AppLocalData }
+  );
+
+  return `${ledgerId}/${realFileName}`;
+};
+
 export const saveFilesByLedgerId = async (files: File[], ledgerId: string) => {
   await preflightCheckStorageFold(ledgerId);
 
