@@ -15,18 +15,27 @@
       "icons/512x512.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "createUpdaterArtifacts": true
   },
   "productName": "Pure Ledger",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "identifier": "com.simonwong.pureledger",
-  "plugins": {},
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDMwN0M5NzM0OTc2MkY4RApSV1NOTDNaSmM4a0hBNlFoWmpWZjBJa255U0kycCtSekw1WENaQTF2dG1DakVGMjM4UWRseURpVwo=",
+      "endpoints": [
+        "https://github.com/simonwong/pure-ledger/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
+  },
   "app": {
     "security": {
       "assetProtocol": {
-        "scope": [
-          "$APPDATA/**"
-        ],
+        "scope": ["$APPDATA/**"],
         "enable": true
       },
       "csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost; connect-src ipc: http://ipc.localhost"
