@@ -2,17 +2,28 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@easy-shadcn/react";
 import { buttonVariants } from "./ui/button";
-import { useLedgerStore } from "@/store";
 import { LedgerFormModal } from "./LedgerForm";
+import { useQueryLedgers } from "@/store/db/ledger";
+import { useGlobalStore } from "@/store/global";
 
 interface LedgerMenuProps {
   className?: string;
 }
 
 const LedgerMenu: React.FC<LedgerMenuProps> = ({ className, ...props }) => {
-  const { ledgerList, currentSelectId, switchSelect } = useLedgerStore();
+  const { currentLedgerId, switchSelect } = useGlobalStore();
 
-  if (ledgerList.length === 0) {
+  const ledgerData = useQueryLedgers();
+
+  const ledgerList = ledgerData.data;
+
+  React.useEffect(() => {
+    if (currentLedgerId == null && ledgerList && ledgerList.length > 0) {
+      switchSelect(ledgerList[0].id);
+    }
+  }, [currentLedgerId, ledgerList]);
+
+  if (!ledgerList || ledgerList.length === 0) {
     return null;
   }
 
@@ -30,7 +41,7 @@ const LedgerMenu: React.FC<LedgerMenuProps> = ({ className, ...props }) => {
             }}
             className={cn(
               buttonVariants({ variant: "ghost" }),
-              item.id === currentSelectId
+              item.id === currentLedgerId
                 ? "bg-muted hover:bg-muted"
                 : "hover:bg-transparent",
               "justify-start cursor-pointer block whitespace-pre text-wrap h-auto max-w-[200px]"

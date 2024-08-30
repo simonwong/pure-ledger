@@ -1,3 +1,5 @@
+import { BaseDBData, CreateDBData, UpdateDBData } from "./db";
+
 export enum BillType {
   /** 支出 */
   EXPEND = 1,
@@ -5,23 +7,19 @@ export enum BillType {
   INCOME = 2,
 }
 
-export interface CreateBill {
-  /** 账单名称 */
+export interface Bill extends BaseDBData {
+  ledger_id?: number;
+  parent_bill_id?: number;
   name: string;
-  /** 账单类型 */
   type: BillType;
-  /** 账单金额 */
   amount: number;
-  /** 分批次到账金额 */
-  amountBatch?: number[];
-  /** 备注 */
-  remark?: string;
-  /** 创建时间 */
-  createAt: string;
-  /** 备注文件缓存 */
-  remarkFiles?: string[];
+  date: string;
+  note?: string;
+  file_path?: string;
 }
 
-export interface Bill extends CreateBill {
-  id: string;
-}
+export type CreateBill = CreateDBData<Bill>;
+
+export type UpdateBill = UpdateDBData<Bill>;
+
+export type DeleteBill = Bill["id"];

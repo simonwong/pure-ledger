@@ -7,7 +7,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { BillType } from "@/types";
-import { useBillList } from "@/store/bill";
 import { Button } from "@/components/ui/button";
 import { BillFormModal } from "@/components/BillForm";
 import { DollarSign, EllipsisVertical, HandCoins } from "lucide-react";
@@ -19,13 +18,15 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { ImageList } from "../ImageList";
-import { useRemoveBill } from "@/store/actionSet";
+import { useQueryBills, useMutationDeleteBill } from "@/store/db/bill";
 
-interface BillListProps {}
+interface BillListProps {
+  ledgerId: number;
+}
 
-const BillList: React.FC<BillListProps> = () => {
-  const removeBill = useRemoveBill();
-  const billList = useBillList() || [];
+const BillList: React.FC<BillListProps> = ({ ledgerId }) => {
+  const { data: billList = [] } = useQueryBills(ledgerId);
+  const deleteBill = useMutationDeleteBill();
 
   return (
     <Card className="max-w-3xl">
@@ -33,12 +34,12 @@ const BillList: React.FC<BillListProps> = () => {
         <CardTitle>账单列表</CardTitle>
         <CardDescription>总共 {billList.length} 条账单</CardDescription>
         <div className="absolute top-6 right-6 space-x-2">
-          <BillFormModal defaultType={BillType.EXPEND}>
+          <BillFormModal ledgerId={ledgerId} defaultType={BillType.EXPEND}>
             <Button size="sm" variant="secondary" className="hover:bg-primary">
               <HandCoins className="mr-2 h-4 w-4" /> 添加支出账单
             </Button>
           </BillFormModal>
-          <BillFormModal defaultType={BillType.INCOME}>
+          <BillFormModal ledgerId={ledgerId} defaultType={BillType.INCOME}>
             <Button size="sm" variant="secondary" className="hover:bg-primary">
               <DollarSign className="mr-2 h-4 w-4" /> 添加收入账单
             </Button>
@@ -51,16 +52,14 @@ const BillList: React.FC<BillListProps> = () => {
             <div key={item.id} className="flex items-center space-x-12">
               <div className="flex-1 space-y-1">
                 <p className="text-sm font-medium leading-none">{item.name}</p>
-                <p className="text-sm text-muted-foreground">{item.remark}</p>
+                <p className="text-sm text-muted-foreground">{item.note}</p>
               </div>
               <div>{<ImageList data={item.remarkFiles} />}</div>
               <div className="ml-auto font-medium">
                 {item.type === BillType.EXPEND ? "-" : "+"}
                 {item.amount}
               </div>
-              <div className="text-sm text-muted-foreground">
-                {item.createAt}
-              </div>
+              <div className="text-sm text-muted-foreground">{item.date}</div>
               <div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -70,7 +69,9 @@ const BillList: React.FC<BillListProps> = () => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-9">
                     <DropdownMenuGroup>
-                      <DropdownMenuItem onClick={() => removeBill(item)}>
+                      <DropdownMenuItem
+                        onClick={() => deleteBill.mutateAsync(item)}
+                      >
                         删除
                       </DropdownMenuItem>
                     </DropdownMenuGroup>
