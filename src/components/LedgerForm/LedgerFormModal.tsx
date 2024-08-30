@@ -23,8 +23,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { DialogProps } from "@radix-ui/react-dialog";
-import { useLedgerStore } from "@/store";
 import { Ledger } from "@/types";
+import {
+  useMutationCreateLedger,
+  useMutationUpdateLedger,
+} from "@/store/db/ledger";
 
 const FormSchema = z.object({
   name: z
@@ -33,7 +36,7 @@ const FormSchema = z.object({
     })
     .trim()
     .min(1, "至少输入1个字"),
-  remark: z.optional(z.string()),
+  note: z.optional(z.string()),
 });
 
 type FormData = z.infer<typeof FormSchema>;
@@ -62,11 +65,12 @@ export interface LedgerFormModalProps extends DialogProps {
 export const LedgerFormModal: React.FC<
   PropsWithChildren<LedgerFormModalProps>
 > = ({ children, data, onSubmit, ...props }) => {
-  const addLedger = useLedgerStore((state) => state.addLedger);
-  const updateLedger = useLedgerStore((state) => state.updateLedger);
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
   });
+
+  const updateMutation = useMutationUpdateLedger();
+  const createMutation = useMutationCreateLedger();
 
   const innerForm = useLedgerFormProps();
 
@@ -78,14 +82,14 @@ export const LedgerFormModal: React.FC<
     }
   }, [data]);
 
-  const handleSubmit = (formData: FormData) => {
+  const handleSubmit = async (formData: FormData) => {
     if (isEdit) {
-      updateLedger({
+      await updateMutation.mutateAsync({
         ...data,
         ...formData,
       });
     } else {
-      addLedger({
+      await createMutation.mutateAsync({
         ...formData,
       });
     }
@@ -122,7 +126,7 @@ export const LedgerFormModal: React.FC<
               />
               <FormField
                 control={form.control}
-                name="remark"
+                name="note"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>备注</FormLabel>

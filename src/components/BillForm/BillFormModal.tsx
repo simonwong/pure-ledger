@@ -12,13 +12,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useLedgerStore } from "@/store";
 import { Bill, BillType, CreateBill } from "@/types";
 import SwitchType from "./SwitchType";
 import DatePicker from "../enhance/DatePicker";
-import { dateToString } from "../enhance/DatePicker/utils";
 import FileUploader from "../FileUploader";
-import { useAddBill, useUpdateBill } from "@/store/actionSet";
+import { useMutationCreateBill, useMutationUpdateBill } from "@/store/db/bill";
+import dayjs from "dayjs";
+import { useGlobalStore } from "@/store/global";
 
 const FormSchema = z.object({
   name: z
@@ -35,14 +35,15 @@ const FormSchema = z.object({
     .min(0, "最小金额填0")
     .safe("超出金额限制"),
   type: z.nativeEnum(BillType),
-  createAt: z.date(),
-  remark: z.optional(z.string()),
-  remarkFiles: z.array(z.string()).optional(),
+  date: z.date(),
+  note: z.optional(z.string()),
+  file_path: z.array(z.string()).optional(),
 });
 
 type FormData = z.infer<typeof FormSchema>;
 
 export interface BillFormModalProps extends DialogProps {
+  ledgerId: number;
   data?: Bill;
   onSubmit?: () => void;
   defaultType: BillType;
@@ -50,19 +51,20 @@ export interface BillFormModalProps extends DialogProps {
 
 export const BillFormModal: React.FC<PropsWithChildren<BillFormModalProps>> = ({
   children,
+  ledgerId,
   data,
   onSubmit,
   defaultType,
   ...props
 }) => {
-  const currentSelectId = useLedgerStore((state) => state.currentSelectId)!;
-  const addBill = useAddBill();
-  const updateBill = useUpdateBill();
+  const currentSelectId = useGlobalStore((state) => state.currentLedgerId);
+  const createBill = useMutationCreateBill();
+  const updateBill = useMutationUpdateBill();
 
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      createAt: new Date(),
+      date: new Date(),
     },
   });
 
@@ -73,15 +75,18 @@ export const BillFormModal: React.FC<PropsWithChildren<BillFormModalProps>> = ({
   const handleSubmit = async (formData: FormData) => {
     const submitData: CreateBill = {
       ...formData,
-      createAt: dateToString(formData.createAt),
+      ledger_id: ledgerId,
+      date: dayjs(formData.date).format("YYYY-MM-DD HH:mm:ss"),
+      file_path: formData.file_path?.join(","),
     };
+
     if (isEdit) {
-      updateBill({
+      await updateBill.mutateAsync({
         ...data,
         ...submitData,
       });
     } else {
-      addBill({
+      await createBill.mutateAsync({
         ...submitData,
       });
     }
@@ -101,9 +106,14 @@ export const BillFormModal: React.FC<PropsWithChildren<BillFormModalProps>> = ({
       onOpenChange={(op) => {
         if (op) {
           if (data) {
-            form.reset({ ...data, createAt: new Date(data.createAt) });
+            const { file_path, date, ...resetData } = data;
+            form.reset({
+              ...resetData,
+              date: new Date(date),
+              file_path: file_path?.split(","),
+            });
           } else {
-            form.reset({ type: defaultType, createAt: new Date() });
+            form.reset({ type: defaultType, date: new Date() });
           }
         }
       }}
@@ -163,7 +173,7 @@ export const BillFormModal: React.FC<PropsWithChildren<BillFormModalProps>> = ({
               />
               <FormField
                 control={form.control}
-                name="createAt"
+                name="date"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>时间</FormLabel>
@@ -176,7 +186,7 @@ export const BillFormModal: React.FC<PropsWithChildren<BillFormModalProps>> = ({
             <div className="flex-1 space-y-4">
               <FormField
                 control={form.control}
-                name="remark"
+                name="note"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>备注</FormLabel>
@@ -189,7 +199,7 @@ export const BillFormModal: React.FC<PropsWithChildren<BillFormModalProps>> = ({
               />
               <FormField
                 control={form.control}
-                name="remarkFiles"
+                name="file_path"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>文件</FormLabel>

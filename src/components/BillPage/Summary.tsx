@@ -2,13 +2,15 @@ import { useMemo } from "react";
 import BigNumber from "bignumber.js";
 import { DollarSign, HandCoins, WalletCards } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useBillList } from "@/store/bill";
 import { BillType } from "@/types";
+import { useQueryBills } from "@/store/db/bill";
 
-interface BillSummaryProps {}
+interface BillSummaryProps {
+  ledgerId: number;
+}
 
-const BillSummary: React.FC<BillSummaryProps> = () => {
-  const billList = useBillList();
+const BillSummary: React.FC<BillSummaryProps> = ({ ledgerId }) => {
+  const { data: billList } = useQueryBills(ledgerId);
 
   const { balance, expend, income } = useMemo(() => {
     if (billList && billList.length > 0) {

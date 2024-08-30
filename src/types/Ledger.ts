@@ -1,9 +1,12 @@
-export interface CreateLedger {
+import { BaseDBData, CreateDBData, UpdateDBData } from "./db";
+
+export interface Ledger extends BaseDBData {
   name: string;
-  remark?: string;
+  note?: string;
 }
 
-export interface Ledger extends CreateLedger {
-  id: string;
-  createAt: string;
-}
+export type CreateLedger = CreateDBData<Ledger>;
+
+export type UpdateLedger = UpdateDBData<Ledger>;
+
+export type DeleteLedger = Ledger["id"];

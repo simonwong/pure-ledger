@@ -1,4 +1,3 @@
-import { useCurrentLedger } from "@/store/ledger";
 import * as React from "react";
 import { alertModalAction } from "@easy-shadcn/react";
 import {
@@ -10,22 +9,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { FilePenLine, Settings2, Trash2 } from "lucide-react";
-import { useLedgerFormModal } from "../LedgerForm";
-import { useRemoveLedger } from "@/store/actionSet";
+import { useLedgerFormModal } from "@/components/LedgerForm";
+import { Ledger } from "@/types";
+import { useMutationDeleteLedger } from "@/store/db/ledger";
 
-interface BillHeaderProps {}
+interface BillHeaderProps {
+  ledger: Ledger;
+}
 
-const BillHeader: React.FC<BillHeaderProps> = () => {
-  const removeLedger = useRemoveLedger();
-  const ledger = useCurrentLedger();
+const BillHeader: React.FC<BillHeaderProps> = ({ ledger }) => {
+  const deleteLedger = useMutationDeleteLedger();
 
   const { openLedgerFormModal, ledgerFormModal } = useLedgerFormModal();
 
   return (
     <div className="flex items-center justify-between space-y-2">
       <div className="space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight">{ledger?.name}</h2>
-        {ledger?.remark && <p>{ledger?.remark}</p>}
+        <h2 className="text-3xl font-bold tracking-tight">{ledger.name}</h2>
+        {ledger.note && <p>{ledger.note}</p>}
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger>
@@ -35,7 +36,7 @@ const BillHeader: React.FC<BillHeaderProps> = () => {
           <DropdownMenuItem
             onClick={() => {
               openLedgerFormModal({
-                data: ledger!,
+                data: ledger,
               });
             }}
           >
@@ -50,10 +51,8 @@ const BillHeader: React.FC<BillHeaderProps> = () => {
               alertModalAction.confirm({
                 title: "是否确认删除",
                 content: "危险操作哦，删除后这个账本的数据将无法恢复",
-                onConfirm: () => {
-                  if (ledger) {
-                    removeLedger(ledger);
-                  }
+                onConfirm: async () => {
+                  await deleteLedger.mutateAsync(ledger.id);
                 },
               });
             }}

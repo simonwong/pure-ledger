@@ -18,7 +18,6 @@ const SwitchType: React.FC<SwitchTypeProps> = ({ value, onChange }) => {
       type="single"
       value={String(value)}
       onValueChange={(value) => {
-        console.log("onValueChange value", value);
         if (value) {
           handleChange(value);
         }
