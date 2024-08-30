@@ -1,8 +1,13 @@
+import * as React from "react";
 import { Button } from "@easy-shadcn/react";
 import { Loader2Icon, UploadIcon } from "lucide-react";
-import * as React from "react";
+import { open } from "@tauri-apps/plugin-dialog";
 import { ImageList } from "@/components/ImageList";
-import { removeStorageFile, saveFileByLedgerId } from "@/lib/storageFile";
+import {
+  copyFilesByLedgerId,
+  removeStorageFile,
+  saveFileByLedgerId,
+} from "@/lib/storageFile";
 
 interface FileUploaderProps {
   ledgerId: string;
@@ -19,22 +24,20 @@ const FileUploader: React.FC<FileUploaderProps> = ({
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleClickUpload = async () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleChangeFileUpload: React.ChangeEventHandler<
-    HTMLInputElement
-  > = async (e) => {
-    if (e.target.files) {
-      const file = e.target.files[0];
-
-      setLoading(true);
-      try {
-        const path = await saveFileByLedgerId(file, ledgerId);
-        onChange?.([...(value || []), path]);
-      } finally {
-        setLoading(false);
-      }
+    // fileInputRef.current?.click();
+    const files = await open({
+      multiple: true,
+      directory: false,
+      filters: [
+        { name: "image", extensions: ["svg", "png", "jpg", "jpeg", "webp"] },
+      ],
+    });
+    if (files) {
+      const filePaths = await copyFilesByLedgerId(
+        files.map((file) => file.path),
+        ledgerId
+      );
+      onChange?.([...(value || []), ...filePaths]);
     }
   };
 
@@ -61,12 +64,6 @@ const FileUploader: React.FC<FileUploaderProps> = ({
         )}
         点击上传文件
       </Button>
-      <input
-        onChange={handleChangeFileUpload}
-        hidden
-        ref={fileInputRef}
-        type="file"
-      />
       {value && (
         <div className="pt-3">
           <ImageList data={value} showRemove onRemove={handleRemoveFile} />
