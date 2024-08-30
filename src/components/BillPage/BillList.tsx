@@ -54,7 +54,7 @@ const BillList: React.FC<BillListProps> = ({ ledgerId }) => {
                 <p className="text-sm font-medium leading-none">{item.name}</p>
                 <p className="text-sm text-muted-foreground">{item.note}</p>
               </div>
-              <div>{<ImageList data={item.remarkFiles} />}</div>
+              <div>{<ImageList data={item.file_path?.split(",")} />}</div>
               <div className="ml-auto font-medium">
                 {item.type === BillType.EXPEND ? "-" : "+"}
                 {item.amount}

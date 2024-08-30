@@ -4,6 +4,7 @@ import {
   mkdir,
   writeFile,
   remove,
+  copyFile,
 } from "@tauri-apps/plugin-fs";
 import { appLocalDataDir, join } from "@tauri-apps/api/path";
 import { convertFileSrc } from "@tauri-apps/api/core";
@@ -69,6 +70,28 @@ export const saveFilesByLedgerId = async (files: File[], ledgerId: string) => {
       { baseDir: BaseDirectory.AppLocalData }
     );
 
+    fileNames.push(`${ledgerId}/${realFileName}`);
+  }
+  return fileNames;
+};
+
+export const copyFilesByLedgerId = async (
+  filePaths: string[],
+  ledgerId: string
+) => {
+  await preflightCheckStorageFold(ledgerId);
+  const fileNames = [];
+
+  for (const formPath of filePaths) {
+    const realFileName = `${uuidv4()}.${formPath.split(".").at(-1)}`;
+
+    await copyFile(
+      formPath,
+      `${storageFilesPath}/${ledgerId}/${realFileName}`,
+      {
+        toPathBaseDir: BaseDirectory.AppLocalData,
+      }
+    );
     fileNames.push(`${ledgerId}/${realFileName}`);
   }
   return fileNames;
