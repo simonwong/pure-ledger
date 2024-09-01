@@ -8,8 +8,8 @@ import { Bill, BillType, CreateBill } from "@/types";
 import SwitchType from "./SwitchType";
 import FileUploader from "../FileUploader";
 import { useMutationCreateBill, useMutationUpdateBill } from "@/store/db/bill";
-import dayjs from "dayjs";
 import { useGlobalStore } from "@/store/global";
+import { format } from "date-fns";
 
 const FormSchema = z.object({
   name: z
@@ -67,7 +67,7 @@ export const BillFormModal: React.FC<PropsWithChildren<BillFormModalProps>> = ({
     const submitData: CreateBill = {
       ...formData,
       ledger_id: ledgerId,
-      date: dayjs(formData.date).format("YYYY-MM-DD HH:mm:ss"),
+      date: format(formData.date, "yyyy-MM-dd HH:mm:ss"),
       file_path: formData.file_path?.join(","),
     };
 
