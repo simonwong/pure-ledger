@@ -9,8 +9,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import Button from "@/components/enhance/Button";
-import { Form } from "@/components/ui/form";
+import { Button, Form, FormProps } from "@easy-shadcn/react";
 import { FieldValues, UseFormReturn } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
@@ -22,7 +21,7 @@ export interface FormModalProps<T extends FieldValues = FieldValues>
   desc?: ReactNode;
   content?: ReactNode;
   onConfirm?: (formData: T) => Promise<void> | void;
-  form: UseFormReturn<T, any, undefined>;
+  form: FormProps<T>["form"];
   contentClassName?: string;
 }
 
@@ -66,16 +65,14 @@ const FormModal = <T extends FieldValues = FieldValues>({
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{desc}</DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleConfirm)}>
-            {content}
-            <DialogFooter>
-              <Button disabled={loading} type="submit">
-                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                保存
-              </Button>
-            </DialogFooter>
-          </form>
+        <Form form={form} onSubmit={form.handleSubmit(handleConfirm)}>
+          {content}
+          <DialogFooter>
+            <Button disabled={loading} type="submit">
+              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              保存
+            </Button>
+          </DialogFooter>
         </Form>
       </DialogContent>
     </Dialog>

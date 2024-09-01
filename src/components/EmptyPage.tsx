@@ -1,5 +1,5 @@
 import { SVGProps, useMemo } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@easy-shadcn/react";
 import { LedgerFormModal } from "@/components/LedgerForm";
 
 const DancingSvg = (props: SVGProps<SVGSVGElement>) => (
