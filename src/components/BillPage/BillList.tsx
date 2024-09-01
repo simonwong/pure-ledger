@@ -1,22 +1,9 @@
 import * as React from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card } from "@easy-shadcn/react";
 import { BillType } from "@/types";
-import { Button } from "@/components/ui/button";
+import { Button, DropdownMenu } from "@easy-shadcn/react";
 import { BillFormModal } from "@/components/BillForm";
 import { DollarSign, EllipsisVertical, HandCoins } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
 import { ImageList } from "../ImageList";
 import { useQueryBills, useMutationDeleteBill } from "@/store/db/bill";
 
@@ -29,24 +16,35 @@ const BillList: React.FC<BillListProps> = ({ ledgerId }) => {
   const deleteBill = useMutationDeleteBill();
 
   return (
-    <Card className="max-w-3xl">
-      <CardHeader className="relative">
-        <CardTitle>账单列表</CardTitle>
-        <CardDescription>总共 {billList.length} 条账单</CardDescription>
-        <div className="absolute top-6 right-6 space-x-2">
-          <BillFormModal ledgerId={ledgerId} defaultType={BillType.EXPEND}>
-            <Button size="sm" variant="secondary" className="hover:bg-primary">
-              <HandCoins className="mr-2 h-4 w-4" /> 添加支出账单
-            </Button>
-          </BillFormModal>
-          <BillFormModal ledgerId={ledgerId} defaultType={BillType.INCOME}>
-            <Button size="sm" variant="secondary" className="hover:bg-primary">
-              <DollarSign className="mr-2 h-4 w-4" /> 添加收入账单
-            </Button>
-          </BillFormModal>
+    <Card
+      className="max-w-3xl"
+      title={
+        <div className="flex justify-between items-center">
+          <span>账单列表</span>
+          <div className="top-6 right-6 space-x-2">
+            <BillFormModal ledgerId={ledgerId} defaultType={BillType.EXPEND}>
+              <Button
+                size="sm"
+                variant="secondary"
+                className="hover:bg-primary"
+              >
+                <HandCoins className="mr-2 h-4 w-4" /> 添加支出账单
+              </Button>
+            </BillFormModal>
+            <BillFormModal ledgerId={ledgerId} defaultType={BillType.INCOME}>
+              <Button
+                size="sm"
+                variant="secondary"
+                className="hover:bg-primary"
+              >
+                <DollarSign className="mr-2 h-4 w-4" /> 添加收入账单
+              </Button>
+            </BillFormModal>
+          </div>
         </div>
-      </CardHeader>
-      <CardContent>
+      }
+      description={`总共 ${billList.length} 条账单`}
+      content={
         <div className="space-y-8 min-w-96">
           {billList.map((item) => (
             <div key={item.id} className="flex items-center space-x-12">
@@ -61,28 +59,28 @@ const BillList: React.FC<BillListProps> = ({ ledgerId }) => {
               </div>
               <div className="text-sm text-muted-foreground">{item.date}</div>
               <div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm">
-                      <EllipsisVertical size={16} />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-9">
-                    <DropdownMenuGroup>
-                      <DropdownMenuItem
-                        onClick={() => deleteBill.mutateAsync(item)}
-                      >
-                        删除
-                      </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                  </DropdownMenuContent>
+                <DropdownMenu
+                  menu={[
+                    {
+                      name: "删除",
+                      key: "delete",
+                      onClick: () => deleteBill.mutateAsync(item),
+                    },
+                  ]}
+                  contentProps={{
+                    className: "w-9",
+                  }}
+                >
+                  <Button variant="outline" size="sm">
+                    <EllipsisVertical size={16} />
+                  </Button>
                 </DropdownMenu>
               </div>
             </div>
           ))}
         </div>
-      </CardContent>
-    </Card>
+      }
+    />
   );
 };
 

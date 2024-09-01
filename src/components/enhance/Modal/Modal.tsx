@@ -9,7 +9,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import Button from "@/components/enhance/Button";
+import { Button } from "@easy-shadcn/react";
 
 export interface ModalProps extends DialogProps {
   title?: ReactNode;

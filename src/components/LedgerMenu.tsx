@@ -1,7 +1,7 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@easy-shadcn/react";
-import { buttonVariants } from "./ui/button";
+import { buttonVariants } from "@easy-shadcn/react";
 import { LedgerFormModal } from "./LedgerForm";
 import { useQueryLedgers } from "@/store/db/ledger";
 import { useGlobalStore } from "@/store/global";

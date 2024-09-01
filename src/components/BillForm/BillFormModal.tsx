@@ -1,20 +1,11 @@
 import { PropsWithChildren } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { DialogProps } from "@radix-ui/react-dialog";
 import { FormModal } from "@/components/enhance/Modal";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form, FormItem, Input, DatePicker } from "@easy-shadcn/react";
 import { Bill, BillType, CreateBill } from "@/types";
 import SwitchType from "./SwitchType";
-import DatePicker from "../enhance/DatePicker";
 import FileUploader from "../FileUploader";
 import { useMutationCreateBill, useMutationUpdateBill } from "@/store/db/bill";
 import dayjs from "dayjs";
@@ -61,7 +52,7 @@ export const BillFormModal: React.FC<PropsWithChildren<BillFormModalProps>> = ({
   const createBill = useMutationCreateBill();
   const updateBill = useMutationUpdateBill();
 
-  const form = useForm<FormData>({
+  const form = Form.useForm<FormData>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       date: new Date(),
@@ -133,85 +124,66 @@ export const BillFormModal: React.FC<PropsWithChildren<BillFormModalProps>> = ({
           </div>
           <div className="flex gap-4">
             <div className="flex-1 space-y-4">
-              <FormField
+              <FormItem
                 control={form.control}
                 name="name"
+                label="账单名称"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>账单名称</FormLabel>
-                    <FormControl>
-                      <Input placeholder="请输入账单名称" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                  <Input placeholder="请输入账单名称" {...field} />
                 )}
               />
-              <FormField
+              <FormItem
                 control={form.control}
                 name="amount"
+                label={`${typeText}金额`}
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{typeText}金额</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="请输入金额"
-                        {...field}
-                        onChange={(event) => {
-                          const val = event.target.value;
-                          if (val === "") {
-                            field.onChange(undefined);
-                          } else {
-                            field.onChange(+val);
-                          }
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                  <Input
+                    type="number"
+                    placeholder="请输入金额"
+                    {...field}
+                    onChange={(event) => {
+                      const val = event.target.value;
+                      if (val === "") {
+                        field.onChange(undefined);
+                      } else {
+                        field.onChange(+val);
+                      }
+                    }}
+                  />
                 )}
               />
-              <FormField
+              <FormItem
                 control={form.control}
                 name="date"
+                label="时间"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>时间</FormLabel>
-                    <DatePicker {...field} />
-                    <FormMessage />
-                  </FormItem>
+                  <DatePicker
+                    buttonClassName="w-full"
+                    selected={field.value}
+                    onSelect={field.onChange}
+                  />
                 )}
               />
             </div>
             <div className="flex-1 space-y-4">
-              <FormField
+              <FormItem
                 control={form.control}
                 name="note"
+                label="备注"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>备注</FormLabel>
-                    <FormControl>
-                      <Input placeholder="请输入备注" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                  <Input placeholder="请输入备注" {...field} />
                 )}
               />
-              <FormField
+              <FormItem
                 control={form.control}
                 name="file_path"
+                label="文件"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>文件</FormLabel>
-                    <FormControl>
-                      <FileUploader
-                        ledgerId={currentSelectId}
-                        value={field.value}
-                        onChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                  <FileUploader
+                    ledgerId={currentSelectId}
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
                 )}
               />
             </div>

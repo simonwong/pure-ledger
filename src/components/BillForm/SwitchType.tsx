@@ -1,7 +1,7 @@
 import * as React from "react";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { BillType } from "@/types";
 import { DollarSign, HandCoins } from "lucide-react";
+import { Toggle } from "@easy-shadcn/react";
 
 interface SwitchTypeProps {
   value: BillType;
@@ -14,7 +14,7 @@ const SwitchType: React.FC<SwitchTypeProps> = ({ value, onChange }) => {
   };
 
   return (
-    <ToggleGroup
+    <Toggle
       type="single"
       value={String(value)}
       onValueChange={(value) => {
@@ -22,21 +22,27 @@ const SwitchType: React.FC<SwitchTypeProps> = ({ value, onChange }) => {
           handleChange(value);
         }
       }}
-    >
-      <ToggleGroupItem
-        value={String(BillType.EXPEND)}
-        className="cursor-pointer"
-      >
-        <HandCoins className="mr-2 h-4 w-4" /> 支出
-      </ToggleGroupItem>
-      <ToggleGroupItem
-        value={String(BillType.INCOME)}
-        className="cursor-pointer"
-      >
-        <DollarSign className="mr-2 h-4 w-4" />
-        收入
-      </ToggleGroupItem>
-    </ToggleGroup>
+      options={[
+        {
+          value: String(BillType.EXPEND),
+          className: "cursor-pointer",
+          label: (
+            <>
+              <HandCoins className="mr-2 h-4 w-4" /> 支出
+            </>
+          ),
+        },
+        {
+          value: String(BillType.INCOME),
+          className: "cursor-pointer",
+          label: (
+            <>
+              <DollarSign className="mr-2 h-4 w-4" /> 收入
+            </>
+          ),
+        },
+      ]}
+    />
   );
 };
 
