@@ -4,7 +4,7 @@ import { ORM } from "./orm";
 
 export const useQueryBills = (ledgerId: number) => {
   return useQuery({
-    queryKey: ["bills"],
+    queryKey: ["bills", ledgerId],
     queryFn: async () => {
       const res = await ORM.selectAll("bills", {
         ledger_id: ledgerId,
