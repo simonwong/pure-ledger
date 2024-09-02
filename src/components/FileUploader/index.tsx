@@ -6,7 +6,7 @@ import { ImageList } from "@/components/ImageList";
 import { copyFilesByLedgerId, removeStorageFile } from "@/lib/storageFile";
 
 interface FileUploaderProps {
-  ledgerId: string;
+  ledgerId: number;
   value?: string[];
   onChange?: (filePaths: string[]) => void;
 }
@@ -27,7 +27,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
     if (files) {
       const filePaths = await copyFilesByLedgerId(
         files.map((file) => file.path),
-        ledgerId
+        String(ledgerId)
       );
       onChange?.([...(value || []), ...filePaths]);
     }

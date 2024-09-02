@@ -1,28 +1,28 @@
 import { db } from "./database";
 import {
-  Bill,
-  CreateBill,
-  CreateLedger,
-  Ledger,
-  UpdateBill,
-  UpdateLedger,
+  BillTDO,
+  CreateBillInput,
+  CreateLedgerInput,
+  LedgerDTO,
+  UpdateBillInput,
+  UpdateLedgerInput,
 } from "@/types";
 
 type TableName = "ledgers" | "bills";
 
 type SelectResult = {
-  ledgers: Ledger;
-  bills: Bill;
+  ledgers: LedgerDTO;
+  bills: BillTDO;
 };
 
 type InsertParams = {
-  ledgers: CreateLedger;
-  bills: CreateBill;
+  ledgers: CreateLedgerInput;
+  bills: CreateBillInput;
 };
 
 type UpdateParams = {
-  ledgers: UpdateLedger;
-  bills: UpdateBill;
+  ledgers: UpdateLedgerInput;
+  bills: UpdateBillInput;
 };
 
 export class ORM {

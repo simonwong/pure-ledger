@@ -1,4 +1,4 @@
-import { Ledger } from "@/types";
+import { LedgerDTO } from "@/types";
 import { test_db } from "./database";
 
 const clearAllData = async () => {
@@ -49,7 +49,7 @@ const resetAndInit = async () => {
   await clearAllData();
   setLedgers();
 
-  const res = await test_db.select<Ledger[]>("SELECT * from ledgers");
+  const res = await test_db.select<LedgerDTO[]>("SELECT * from ledgers");
 
   const less = res.find((item) => item.note?.includes("少量"));
   if (less) {

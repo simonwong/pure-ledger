@@ -13,7 +13,7 @@ import {
 import { Button } from "@easy-shadcn/react";
 import { Form, FormItem, Input } from "@easy-shadcn/react";
 import { DialogProps } from "@radix-ui/react-dialog";
-import { Ledger } from "@/types";
+import { LedgerDTO } from "@/types";
 import {
   useMutationCreateLedger,
   useMutationUpdateLedger,
@@ -48,7 +48,7 @@ const useLedgerFormProps = () => {
 };
 
 export interface LedgerFormModalProps extends DialogProps {
-  data?: Ledger;
+  data?: LedgerDTO;
   onSubmit?: () => void;
 }
 
