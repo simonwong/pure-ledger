@@ -48,6 +48,10 @@ jobs:
       - name: install frontend dependencies
         run: pnpm install
 
+      - name: Create .env file
+        run: |
+          echo "TAURI_SIGNING_PRIVATE_KEY=${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}" >> .env
+
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
