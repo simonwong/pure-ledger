@@ -4,7 +4,7 @@ import BillHeader from "./Header";
 import BillList from "./BillList";
 import EmptyPage from "@/components/EmptyPage";
 import { useGlobalStore } from "@/store/global";
-import { useQueryLedger } from "@/store/db/ledger";
+import { useQueryLedger } from "@/store/ledger";
 import { Loader2Icon } from "lucide-react";
 
 interface BillPageProps {}

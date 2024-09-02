@@ -5,7 +5,7 @@ import { Button, DropdownMenu } from "@easy-shadcn/react";
 import { BillFormModal } from "@/components/BillForm";
 import { DollarSign, EllipsisVertical, HandCoins } from "lucide-react";
 import { ImageList } from "../ImageList";
-import { useQueryBills, useMutationDeleteBill } from "@/store/db/bill";
+import { useQueryBills, useMutationDeleteBill } from "@/store/bill";
 
 interface BillListProps {
   ledgerId: number;

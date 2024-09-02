@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@easy-shadcn/react";
 import { buttonVariants } from "@easy-shadcn/react";
 import { LedgerFormModal } from "./LedgerForm";
-import { useQueryLedgers } from "@/store/db/ledger";
+import { useQueryLedgers } from "@/store/ledger";
 import { useGlobalStore } from "@/store/global";
 
 interface LedgerMenuProps {

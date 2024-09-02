@@ -1,29 +1,17 @@
-import { removeStorageFoldByLedgerId } from "@/lib/storageFile";
-import { CreateLedger, DeleteLedger, UpdateLedger } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ORM } from "./orm";
+import * as LedgersService from "@/infrastructure/ledgers/api";
 
 export const useQueryLedgers = () => {
   return useQuery({
     queryKey: ["ledgers"],
-    queryFn: async () => {
-      const res = await ORM.selectAll("ledgers");
-
-      return res;
-    },
+    queryFn: LedgersService.getLedgers,
   });
 };
 
 export const useQueryLedger = (ledgerId: number | null) => {
   return useQuery({
     queryKey: ["ledger", ledgerId],
-    queryFn: async () => {
-      if (ledgerId == null) {
-        return null;
-      }
-      const res = await ORM.selectById("ledgers", ledgerId);
-      return res;
-    },
+    queryFn: ledgerId ? () => LedgersService.getLedger(ledgerId) : () => null,
   });
 };
 
@@ -31,9 +19,7 @@ export const useMutationCreateLedger = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: CreateLedger) => {
-      await ORM.insert("ledgers", data);
-    },
+    mutationFn: LedgersService.createLedger,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["ledgers"] });
     },
@@ -44,9 +30,7 @@ export const useMutationUpdateLedger = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: UpdateLedger) => {
-      await ORM.updateById("ledgers", data, data.id);
-    },
+    mutationFn: LedgersService.updateLedger,
     onSuccess: (_, data) => {
       queryClient.invalidateQueries({ queryKey: ["ledgers"] });
       queryClient.invalidateQueries({ queryKey: ["ledger", data.id] });
@@ -64,11 +48,8 @@ export const useMutationDeleteLedger = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (id: DeleteLedger) => {
-      await ORM.deleteById("ledgers", id);
-    },
-    onSuccess: async (_, id) => {
-      await removeStorageFoldByLedgerId(String(id));
+    mutationFn: LedgersService.deleteLedger,
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["ledgers"] });
     },
   });

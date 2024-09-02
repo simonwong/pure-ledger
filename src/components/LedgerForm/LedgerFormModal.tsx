@@ -17,7 +17,7 @@ import { Ledger } from "@/types";
 import {
   useMutationCreateLedger,
   useMutationUpdateLedger,
-} from "@/store/db/ledger";
+} from "@/store/ledger";
 
 const FormSchema = z.object({
   name: z

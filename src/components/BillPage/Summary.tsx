@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js";
 import { DollarSign, HandCoins, WalletCards } from "lucide-react";
 import { Card } from "@easy-shadcn/react";
 import { BillType } from "@/types";
-import { useQueryBills } from "@/store/db/bill";
+import { useQueryBills } from "@/store/bill";
 
 interface BillSummaryProps {
   ledgerId: number;

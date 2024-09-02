@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@easy-shadcn/react':
-        specifier: ^0.0.3
-        version: 0.0.3(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.4
+        version: 0.0.4(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@easy-shadcn/utils':
         specifier: ^0.0.1
         version: 0.0.1
@@ -244,8 +244,8 @@ packages:
     resolution: {integrity: sha512-xm8XrMKz0IlUdocVbYJe0Z9xEgidU7msskG8BbhnTPK/HZ2z/7FP7ykqPgrUH+C+r414mNfNWam1f2vqOjqjYQ==}
     engines: {node: '>=6.9.0'}
 
-  '@easy-shadcn/react@0.0.3':
-    resolution: {integrity: sha512-kbPj1j3lly7ncguc7xQgs0WTJx/C35S1SETtwseA+bWQx9mQKt8WuuSKmKRIOOnMb0y9rF+7mBKbaHtLDLFQqw==}
+  '@easy-shadcn/react@0.0.4':
+    resolution: {integrity: sha512-vxD6Hw7ySyNQq/CdKfFZ4Ax2NMHev6QZaijPdXRCoNipT4k+Pa8O0TVR69vQ0frPQpntmAtvefcc6F0GpsWg/w==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
@@ -2062,7 +2062,7 @@ snapshots:
       '@babel/helper-validator-identifier': 7.24.7
       to-fast-properties: 2.0.0
 
-  '@easy-shadcn/react@0.0.3(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@easy-shadcn/react@0.0.4(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@easy-shadcn/utils': 0.0.1
       '@hookform/resolvers': 3.9.0(react-hook-form@7.53.0(react@18.3.1))
