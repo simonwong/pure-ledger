@@ -1,4 +1,8 @@
-import { CreateLedger, DeleteLedger, UpdateLedger } from "@/types";
+import {
+  CreateLedgerInput,
+  DeleteLedgerInput,
+  UpdateLedgerInput,
+} from "./type";
 
 import { ORM } from "@/infrastructure/orm";
 import { removeStorageFoldByLedgerId } from "@/lib/storageFile";
@@ -14,15 +18,15 @@ export const getLedger = async (ledgerId: number) => {
   return res;
 };
 
-export const createLedger = async (data: CreateLedger) => {
+export const createLedger = async (data: CreateLedgerInput) => {
   await ORM.insert("ledgers", data);
 };
 
-export const updateLedger = async (data: UpdateLedger) => {
+export const updateLedger = async (data: UpdateLedgerInput) => {
   await ORM.updateById("ledgers", data, data.id);
 };
 
-export const deleteLedger = async (id: DeleteLedger) => {
+export const deleteLedger = async (id: DeleteLedgerInput) => {
   await ORM.deleteById("ledgers", id);
   await removeStorageFoldByLedgerId(String(id));
 };

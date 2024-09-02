@@ -4,7 +4,7 @@ import { z } from "zod";
 import { DialogProps } from "@radix-ui/react-dialog";
 import { FormModal } from "@/components/enhance/Modal";
 import { Form, FormItem, Input, DatePicker } from "@easy-shadcn/react";
-import { Bill, BillType, CreateBill } from "@/types";
+import { BillTDO, BillType, CreateBillInput } from "@/types";
 import SwitchType from "./SwitchType";
 import FileUploader from "../FileUploader";
 import { useMutationCreateBill, useMutationUpdateBill } from "@/store/bill";
@@ -35,7 +35,7 @@ type FormData = z.infer<typeof FormSchema>;
 
 export interface BillFormModalProps extends DialogProps {
   ledgerId: number;
-  data?: Bill;
+  data?: BillTDO;
   onSubmit?: () => void;
   defaultType: BillType;
 }
@@ -64,7 +64,7 @@ export const BillFormModal: React.FC<PropsWithChildren<BillFormModalProps>> = ({
   const isEdit = !!data;
 
   const handleSubmit = async (formData: FormData) => {
-    const submitData: CreateBill = {
+    const submitData: CreateBillInput = {
       ...formData,
       ledger_id: ledgerId,
       date: format(formData.date, "yyyy-MM-dd HH:mm:ss"),
@@ -180,7 +180,7 @@ export const BillFormModal: React.FC<PropsWithChildren<BillFormModalProps>> = ({
                 label="文件"
                 render={({ field }) => (
                   <FileUploader
-                    ledgerId={currentSelectId}
+                    ledgerId={currentSelectId!}
                     value={field.value}
                     onChange={field.onChange}
                   />
