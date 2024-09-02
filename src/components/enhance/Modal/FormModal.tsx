@@ -10,7 +10,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button, Form, FormProps } from "@easy-shadcn/react";
-import { FieldValues, UseFormReturn } from "react-hook-form";
+import { FieldValues } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 
