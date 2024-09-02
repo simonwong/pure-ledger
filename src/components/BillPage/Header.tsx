@@ -4,7 +4,7 @@ import { DropdownMenu } from "@easy-shadcn/react";
 import { FilePenLine, Settings2, Trash2 } from "lucide-react";
 import { useLedgerFormModal } from "@/components/LedgerForm";
 import { Ledger } from "@/types";
-import { useMutationDeleteLedger } from "@/store/db/ledger";
+import { useMutationDeleteLedger } from "@/store/ledger";
 
 interface BillHeaderProps {
   ledger: Ledger;

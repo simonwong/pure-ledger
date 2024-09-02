@@ -7,7 +7,7 @@ import { Form, FormItem, Input, DatePicker } from "@easy-shadcn/react";
 import { Bill, BillType, CreateBill } from "@/types";
 import SwitchType from "./SwitchType";
 import FileUploader from "../FileUploader";
-import { useMutationCreateBill, useMutationUpdateBill } from "@/store/db/bill";
+import { useMutationCreateBill, useMutationUpdateBill } from "@/store/bill";
 import { useGlobalStore } from "@/store/global";
 import { format } from "date-fns";
 

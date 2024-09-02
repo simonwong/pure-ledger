@@ -1,30 +1,17 @@
-import { Bill, CreateBill, UpdateBill } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ORM } from "./orm";
+import * as BillsService from "@/infrastructure/bills/api";
 
 export const useQueryBills = (ledgerId: number) => {
   return useQuery({
     queryKey: ["bills", ledgerId],
-    queryFn: async () => {
-      const res = await ORM.selectAll("bills", {
-        ledger_id: ledgerId,
-      });
-
-      return res;
-    },
+    queryFn: async () => BillsService.getBills(ledgerId),
   });
 };
 
 export const useQueryBill = (billId: number | null) => {
   return useQuery({
     queryKey: ["bill", billId],
-    queryFn: async () => {
-      if (billId == null) {
-        return null;
-      }
-      const res = await ORM.selectById("bills", billId);
-      return res;
-    },
+    queryFn: billId ? () => BillsService.getBill(billId) : () => null,
   });
 };
 
@@ -32,9 +19,7 @@ export const useMutationCreateBill = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: CreateBill) => {
-      await ORM.insert("bills", data);
-    },
+    mutationFn: BillsService.createBill,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bills"] });
     },
@@ -45,9 +30,7 @@ export const useMutationUpdateBill = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: UpdateBill) => {
-      await ORM.updateById("bills", data, data.id);
-    },
+    mutationFn: BillsService.updateBill,
     onSuccess: (_, data) => {
       queryClient.invalidateQueries({ queryKey: ["bills"] });
       queryClient.invalidateQueries({ queryKey: ["bill", data.id] });
@@ -64,12 +47,8 @@ export const useMutationDeleteBill = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (bill: Bill) => {
-      await ORM.deleteById("bills", bill.id);
-    },
-    onSuccess: async (_, bill) => {
-      // TODO: 删除文件
-      // bill.remarkFiles && removeStorageFileBatch(bill.remarkFiles);
+    mutationFn: BillsService.deleteBill,
+    onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ["bills"] });
     },
   });
