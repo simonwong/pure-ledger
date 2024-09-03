@@ -48,9 +48,9 @@ jobs:
       - name: install frontend dependencies
         run: pnpm install
 
-      - name: Create .env file
+      - name: Set environment
         run: |
-          echo "TAURI_SIGNING_PRIVATE_KEY=${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}" >> .env
+          export TAURI_SIGNING_PRIVATE_KEY=${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
 
       - uses: tauri-apps/tauri-action@v0
         env:
