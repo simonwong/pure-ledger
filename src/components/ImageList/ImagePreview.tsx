@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import { Modal } from "@easy-shadcn/react";
 
 interface ImagePreviewProps {
   urls: string[];
@@ -12,16 +12,20 @@ const ImagePreview: React.FC<React.PropsWithChildren<ImagePreviewProps>> = ({
   children,
 }) => {
   return (
-    <Dialog>
-      <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="w-auto max-w-[90vw] max-h-[90vh] overflow-scroll">
+    <Modal
+      contentProps={{
+        className: "w-auto max-w-[90vw] max-h-[90vh] overflow-scroll",
+      }}
+      content={
         <img
           className="object-cover rounded-sm"
           src={urls[currentIdx]}
           alt=""
         />
-      </DialogContent>
-    </Dialog>
+      }
+    >
+      {children}
+    </Modal>
   );
 };
 
