@@ -1,21 +1,11 @@
 import { ReactNode, useState } from "react";
-import { DialogProps } from "@radix-ui/react-dialog";
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Button, Form, FormProps } from "@easy-shadcn/react";
+import { Button, Form, FormProps, Modal, ModalProps } from "@easy-shadcn/react";
 import { FieldValues } from "react-hook-form";
-import { cn } from "@/lib/utils";
+import { cn } from "@easy-shadcn/utils";
 import { Loader2 } from "lucide-react";
 
 export interface FormModalProps<T extends FieldValues = FieldValues>
-  extends DialogProps {
+  extends ModalProps {
   trigger?: ReactNode;
   title?: ReactNode;
   desc?: ReactNode;
@@ -51,31 +41,32 @@ const FormModal = <T extends FieldValues = FieldValues>({
   };
 
   return (
-    <Dialog
+    <Modal
       open={open}
       onOpenChange={(op) => {
         setOpen(op);
         onOpenChange?.(op);
       }}
-      {...props}
-    >
-      {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
-      <DialogContent className={cn("sm:max-w-[425px]", contentClassName)}>
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{desc}</DialogDescription>
-        </DialogHeader>
+      title={title}
+      description={desc}
+      contentProps={{
+        className: cn("sm:max-w-[425px]", contentClassName),
+      }}
+      content={
         <Form form={form} onSubmit={form.handleSubmit(handleConfirm)}>
           {content}
-          <DialogFooter>
-            <Button disabled={loading} type="submit">
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              保存
-            </Button>
-          </DialogFooter>
         </Form>
-      </DialogContent>
-    </Dialog>
+      }
+      footer={
+        <Button disabled={loading} type="submit">
+          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          保存
+        </Button>
+      }
+      {...props}
+    >
+      {trigger}
+    </Modal>
   );
 };
 

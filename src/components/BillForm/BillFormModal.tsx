@@ -1,9 +1,14 @@
 import { PropsWithChildren } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { DialogProps } from "@radix-ui/react-dialog";
 import { FormModal } from "@/components/enhance/Modal";
-import { Form, FormItem, Input, DatePicker } from "@easy-shadcn/react";
+import {
+  Form,
+  FormItem,
+  Input,
+  DatePicker,
+  ModalProps,
+} from "@easy-shadcn/react";
 import { BillTDO, BillType, CreateBillInput } from "@/types";
 import SwitchType from "./SwitchType";
 import FileUploader from "../FileUploader";
@@ -33,7 +38,7 @@ const FormSchema = z.object({
 
 type FormData = z.infer<typeof FormSchema>;
 
-export interface BillFormModalProps extends DialogProps {
+export interface BillFormModalProps extends ModalProps {
   ledgerId: number;
   data?: BillTDO;
   onSubmit?: () => void;

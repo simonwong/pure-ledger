@@ -1,18 +1,8 @@
 import { PropsWithChildren, useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@easy-shadcn/react";
+import { Button, Modal, ModalProps } from "@easy-shadcn/react";
 import { Form, FormItem, Input } from "@easy-shadcn/react";
-import { DialogProps } from "@radix-ui/react-dialog";
 import { LedgerDTO } from "@/types";
 import {
   useMutationCreateLedger,
@@ -47,7 +37,7 @@ const useLedgerFormProps = () => {
   };
 };
 
-export interface LedgerFormModalProps extends DialogProps {
+export interface LedgerFormModalProps extends ModalProps {
   data?: LedgerDTO;
   onSubmit?: () => void;
 }
@@ -88,16 +78,16 @@ export const LedgerFormModal: React.FC<
   };
 
   return (
-    <Dialog {...innerForm.props} {...props}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>{isEdit ? "修改账本" : "新的账本"}</DialogTitle>
-          <DialogDescription>
-            {isEdit ? "修改" : "新建"}你的账本，点击保存
-          </DialogDescription>
-        </DialogHeader>
-        <Form form={form} onSubmit={form.handleSubmit(handleSubmit)}>
+    <Modal
+      {...innerForm.props}
+      {...props}
+      title={isEdit ? "修改账本" : "新的账本"}
+      description={`${isEdit ? "修改" : "新建"}你的账本，点击保存`}
+      contentProps={{
+        className: "sm:max-w-[425px]",
+      }}
+      content={
+        <Form form={form}>
           <div className="py-4 space-y-6">
             <FormItem
               control={form.control}
@@ -118,11 +108,19 @@ export const LedgerFormModal: React.FC<
               )}
             />
           </div>
-          <DialogFooter>
-            <Button type="submit">保存</Button>
-          </DialogFooter>
         </Form>
-      </DialogContent>
-    </Dialog>
+      }
+      footer={
+        <Button
+          onClick={() => {
+            form.handleSubmit(handleSubmit)();
+          }}
+        >
+          保存
+        </Button>
+      }
+    >
+      {children}
+    </Modal>
   );
 };
