@@ -9,11 +9,11 @@ importers:
   .:
     dependencies:
       '@easy-shadcn/react':
-        specifier: ^0.0.4
-        version: 0.0.4(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.0.5
+        version: 0.0.5(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@easy-shadcn/utils':
-        specifier: ^0.0.1
-        version: 0.0.1
+        specifier: ^0.0.2
+        version: 0.0.2
       '@hookform/resolvers':
         specifier: ^3.9.0
         version: 3.9.0(react-hook-form@7.53.0(react@18.3.1))
@@ -247,14 +247,14 @@ packages:
     resolution: {integrity: sha512-xm8XrMKz0IlUdocVbYJe0Z9xEgidU7msskG8BbhnTPK/HZ2z/7FP7ykqPgrUH+C+r414mNfNWam1f2vqOjqjYQ==}
     engines: {node: '>=6.9.0'}
 
-  '@easy-shadcn/react@0.0.4':
-    resolution: {integrity: sha512-vxD6Hw7ySyNQq/CdKfFZ4Ax2NMHev6QZaijPdXRCoNipT4k+Pa8O0TVR69vQ0frPQpntmAtvefcc6F0GpsWg/w==}
+  '@easy-shadcn/react@0.0.5':
+    resolution: {integrity: sha512-ToqHmfNyexppcO85ADkcJ/Ugdb3VyJsMHrxjmx4vEdotU2xmmkIICKeDVRXsLpzdkENs4ySwyFimdv5BeA28Ww==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
 
-  '@easy-shadcn/utils@0.0.1':
-    resolution: {integrity: sha512-mQsiIqokAOvXxynWgZvOJUhsiZ7uToOiwppBFywvZ/KZGovPuARD20ZZNtMTkdMu9B+f/uAvWvnCpKz0cgYkDg==}
+  '@easy-shadcn/utils@0.0.2':
+    resolution: {integrity: sha512-PMSVoz4Ad6x3BSOsw2r0fNrF5GnY1+Zp3e1sMTiY0V2f4heSHprXHSXiNxgidF3mVquhEN04XfFZeOx5w5jbMA==}
 
   '@esbuild/aix-ppc64@0.21.5':
     resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
@@ -2065,9 +2065,9 @@ snapshots:
       '@babel/helper-validator-identifier': 7.24.7
       to-fast-properties: 2.0.0
 
-  '@easy-shadcn/react@0.0.4(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@easy-shadcn/react@0.0.5(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@easy-shadcn/utils': 0.0.1
+      '@easy-shadcn/utils': 0.0.2
       '@hookform/resolvers': 3.9.0(react-hook-form@7.53.0(react@18.3.1))
       '@radix-ui/react-alert-dialog': 1.1.1(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-dialog': 1.1.1(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -2093,7 +2093,7 @@ snapshots:
       - '@types/react'
       - '@types/react-dom'
 
-  '@easy-shadcn/utils@0.0.1':
+  '@easy-shadcn/utils@0.0.2':
     dependencies:
       clsx: 2.1.1
       tailwind-merge: 2.4.0
