@@ -126,8 +126,8 @@ export const removeStorageFile = async (fileName: string) => {
   }
 };
 
-export const removeStorageFileBatch = (fileName: string[]) => {
-  fileName.forEach((file) => {
-    removeStorageFile(file);
-  });
+export const removeStorageFileBatch = async (fileName: string[]) => {
+  for (const file of fileName) {
+    await removeStorageFile(file);
+  }
 };

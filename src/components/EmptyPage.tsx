@@ -1,6 +1,6 @@
 import { SVGProps, useMemo } from "react";
 import { Button } from "@easy-shadcn/react";
-import { LedgerFormModal } from "@/components/LedgerForm";
+import { useLedgerFormModal } from "@/components/LedgerForm";
 
 const DancingSvg = (props: SVGProps<SVGSVGElement>) => (
   <svg
@@ -435,6 +435,7 @@ const FloatSvg = (props: SVGProps<SVGSVGElement>) => (
 interface EmptyPageProps {}
 
 const EmptyPage: React.FC<EmptyPageProps> = () => {
+  const [ledgerFormModalHost, ledgerFormModalAction] = useLedgerFormModal();
   const isBefore = useMemo(() => {
     return Math.random() > 0.5;
   }, []);
@@ -445,9 +446,15 @@ const EmptyPage: React.FC<EmptyPageProps> = () => {
         {isBefore ? <DancingSvg height="300px" /> : <FloatSvg height="300px" />}
       </div>
       <div className="my-8">嗨，莫名其妙来到了这个地方</div>
-      <LedgerFormModal>
-        <Button className="mb-4">新建一个账本</Button>
-      </LedgerFormModal>
+      <Button
+        className="mb-4"
+        onClick={() => {
+          ledgerFormModalAction.open();
+        }}
+      >
+        新建一个账本
+      </Button>
+      {ledgerFormModalHost}
     </div>
   );
 };

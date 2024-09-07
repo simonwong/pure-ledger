@@ -1,2 +1,2 @@
-export * from "./LedgerFormModal";
+export * from "./LedgerForm";
 export * from "./useLedgerFormModal";
