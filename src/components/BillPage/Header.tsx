@@ -5,6 +5,7 @@ import { FilePenLine, Settings2, Trash2 } from "lucide-react";
 import { useLedgerFormModal } from "@/components/LedgerForm";
 import { LedgerDTO } from "@/types";
 import { useMutationDeleteLedger } from "@/store/ledger";
+import { useGlobalStore } from "@/store/global";
 
 interface BillHeaderProps {
   ledger: LedgerDTO;
@@ -12,7 +13,7 @@ interface BillHeaderProps {
 
 const BillHeader: React.FC<BillHeaderProps> = ({ ledger }) => {
   const deleteLedger = useMutationDeleteLedger();
-
+  const switchSelect = useGlobalStore((state) => state.switchSelect);
   const [ledgerFormModalHost, ledgerFormModalAction] = useLedgerFormModal();
 
   return (
@@ -48,6 +49,7 @@ const BillHeader: React.FC<BillHeaderProps> = ({ ledger }) => {
                     content: "危险操作哦，删除后这个账本的数据将无法恢复",
                     onConfirm: async () => {
                       await deleteLedger.mutateAsync(ledger.id);
+                      switchSelect(null);
                     },
                   });
                 },

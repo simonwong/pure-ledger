@@ -17,10 +17,6 @@ const LedgerMenu: React.FC<LedgerMenuProps> = ({ className, ...props }) => {
   const ledgerList = ledgerData.data;
 
   useEffect(() => {
-    console.log("1111", 1111);
-  }, []);
-
-  useEffect(() => {
     if (currentLedgerId == null && ledgerList && ledgerList.length > 0) {
       switchSelect(ledgerList[0].id);
     }

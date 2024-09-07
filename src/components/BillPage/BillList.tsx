@@ -18,9 +18,9 @@ const BillList: React.FC<BillListProps> = ({ ledgerId }) => {
   const [billFormModalHost, billFormModalAction] = useBillFormModal();
 
   return (
-    <>
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <Card
-        className="max-w-3xl"
+        className="col-span-full lg:col-span-3"
         title={
           <div className="flex justify-between items-center">
             <span>账单列表</span>
@@ -109,7 +109,7 @@ const BillList: React.FC<BillListProps> = ({ ledgerId }) => {
         }
       />
       {billFormModalHost}
-    </>
+    </div>
   );
 };
 
