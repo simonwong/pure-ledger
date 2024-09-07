@@ -13,7 +13,7 @@ interface BillHeaderProps {
 const BillHeader: React.FC<BillHeaderProps> = ({ ledger }) => {
   const deleteLedger = useMutationDeleteLedger();
 
-  const { openLedgerFormModal, ledgerFormModal } = useLedgerFormModal();
+  const [ledgerFormModalHost, ledgerFormModalAction] = useLedgerFormModal();
 
   return (
     <div className="flex items-center justify-between space-y-2">
@@ -28,7 +28,7 @@ const BillHeader: React.FC<BillHeaderProps> = ({ ledger }) => {
             name: "编辑",
             key: "edit",
             onClick: () => {
-              openLedgerFormModal({
+              ledgerFormModalAction.open({
                 data: ledger,
               });
             },
@@ -58,7 +58,7 @@ const BillHeader: React.FC<BillHeaderProps> = ({ ledger }) => {
       >
         <Settings2 />
       </DropdownMenu>
-      {ledgerFormModal}
+      {ledgerFormModalHost}
     </div>
   );
 };

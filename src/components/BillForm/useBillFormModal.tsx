@@ -1,23 +1,23 @@
 import { useModal } from "@/hooks/useModal";
-import { LedgerForm, LedgerFormProps } from "./LedgerForm";
+import { BillForm, BillFormProps } from "./BillForm";
 
-export const useLedgerFormModal = () => {
+export const useBillFormModal = () => {
   const [modalHost, actions] = useModal();
 
   return [
     modalHost,
     {
-      open: (props?: LedgerFormProps) => {
-        const isEdit = !!props?.data;
+      open: (props: BillFormProps) => {
+        const prefixText = !!props.data ? "修改" : "新增";
 
         actions.open({
-          title: isEdit ? "修改账本" : "新的账本",
-          description: `${isEdit ? "修改" : "新建"}你的账本，点击保存`,
+          title: `${prefixText}账单`,
+          description: `${prefixText}账单，点击保存`,
           contentProps: {
-            className: "sm:max-w-[425px]",
+            className: "sm:max-w-[725px]",
           },
           content: (
-            <LedgerForm
+            <BillForm
               {...props}
               onFinish={() => {
                 actions.close();

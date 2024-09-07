@@ -1,3 +1,4 @@
+import { removeStorageFileBatch } from "@/lib/storageFile";
 import { CreateBillInput, DeleteBillInput, UpdateBillInput } from "./type";
 
 import { ORM } from "@/infrastructure/orm";
@@ -25,6 +26,5 @@ export const updateBill = async (data: UpdateBillInput) => {
 
 export const deleteBill = async (bill: DeleteBillInput) => {
   await ORM.deleteById("bills", bill.id);
-  // TODO: 删除文件
-  // bill.remarkFiles && removeStorageFileBatch(bill.remarkFiles);
+  bill.file_path && (await removeStorageFileBatch(bill.file_path.split(",")));
 };

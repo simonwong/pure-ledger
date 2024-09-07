@@ -1,7 +1,7 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import { cn } from "@easy-shadcn/utils";
 import { Button, buttonVariants } from "@easy-shadcn/react";
-import { LedgerFormModal } from "./LedgerForm";
+import { useLedgerFormModal } from "./LedgerForm";
 import { useQueryLedgers } from "@/store/ledger";
 import { useGlobalStore } from "@/store/global";
 
@@ -11,12 +11,16 @@ interface LedgerMenuProps {
 
 const LedgerMenu: React.FC<LedgerMenuProps> = ({ className, ...props }) => {
   const { currentLedgerId, switchSelect } = useGlobalStore();
-
+  const [ledgerFormModalHost, ledgerFormModalAction] = useLedgerFormModal();
   const ledgerData = useQueryLedgers();
 
   const ledgerList = ledgerData.data;
 
-  React.useEffect(() => {
+  useEffect(() => {
+    console.log("1111", 1111);
+  }, []);
+
+  useEffect(() => {
     if (currentLedgerId == null && ledgerList && ledgerList.length > 0) {
       switchSelect(ledgerList[0].id);
     }
@@ -28,9 +32,9 @@ const LedgerMenu: React.FC<LedgerMenuProps> = ({ className, ...props }) => {
 
   return (
     <div>
-      <LedgerFormModal>
-        <Button className="mb-4">新建一个账本</Button>
-      </LedgerFormModal>
+      <Button className="mb-4" onClick={() => ledgerFormModalAction.open()}>
+        新建一个账本
+      </Button>
       <nav className={cn("flex-col", className)} {...props}>
         {ledgerList.map((item) => (
           <div
@@ -50,6 +54,7 @@ const LedgerMenu: React.FC<LedgerMenuProps> = ({ className, ...props }) => {
           </div>
         ))}
       </nav>
+      {ledgerFormModalHost}
     </div>
   );
 };

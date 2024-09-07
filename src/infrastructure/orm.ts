@@ -78,10 +78,6 @@ export class ORM {
     const queryCols = keys.join(", ");
     const queryValReplaces = keys.map((_, idx) => `$${idx + 1}`).join(", ");
 
-    console.log(
-      "`INSERT INTO ${tableName} (${queryCols}) VALUES (${queryValReplaces})`",
-      `INSERT INTO ${tableName} (${queryCols}) VALUES (${queryValReplaces})`
-    );
     await db.execute(
       `INSERT INTO ${tableName} (${queryCols}) VALUES (${queryValReplaces})`,
       keys.map((key) => data[key])
