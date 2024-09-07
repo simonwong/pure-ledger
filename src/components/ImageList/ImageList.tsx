@@ -50,7 +50,7 @@ const ImageList: React.FC<ImageListProps> = ({
         <div key={idx} className="relative group">
           <ImagePreview urls={urlStringList} currentIdx={idx}>
             <img
-              className="w-16 h-16 object-cover rounded-sm cursor-pointer"
+              className="w-12 h-12 object-cover rounded-sm cursor-pointer"
               src={url}
               alt=""
             />
