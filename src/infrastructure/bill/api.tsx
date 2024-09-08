@@ -1,30 +1,35 @@
 import { removeStorageFileBatch } from "@/lib/storageFile";
-import { CreateBillInput, DeleteBillInput, UpdateBillInput } from "./type";
-
 import { ORM } from "@/infrastructure/orm";
+import {
+  createBillToInput,
+  dtoListToBills,
+  dtoToBill,
+  updateBillToInput,
+} from "./transform";
+import { Bill, CreateBill, UpdateBill } from "@/domain/bill";
 
 export const getBills = async (ledgerId: number) => {
   const res = await ORM.selectAll("bills", {
     ledger_id: ledgerId,
   });
 
-  return res;
+  return dtoListToBills(res);
 };
 
 export const getBill = async (billId: number) => {
   const res = await ORM.selectById("bills", billId);
-  return res;
+  return res ? dtoToBill(res) : null;
 };
 
-export const createBill = async (data: CreateBillInput) => {
-  await ORM.insert("bills", data);
+export const createBill = async (data: CreateBill) => {
+  await ORM.insert("bills", createBillToInput(data));
 };
 
-export const updateBill = async (data: UpdateBillInput) => {
-  await ORM.updateById("bills", data, data.id);
+export const updateBill = async (data: UpdateBill) => {
+  await ORM.updateById("bills", updateBillToInput(data), data.id);
 };
 
-export const deleteBill = async (bill: DeleteBillInput) => {
+export const deleteBill = async (bill: Bill) => {
   await ORM.deleteById("bills", bill.id);
-  bill.file_path && (await removeStorageFileBatch(bill.file_path.split(",")));
+  bill.filePaths && (await removeStorageFileBatch(bill.filePaths));
 };

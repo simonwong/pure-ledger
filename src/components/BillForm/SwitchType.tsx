@@ -1,5 +1,5 @@
 import * as React from "react";
-import { BillType } from "@/types";
+import { BillType } from "@/domain/bill";
 import { DollarSign, HandCoins } from "lucide-react";
 import { Toggle } from "@easy-shadcn/react";
 

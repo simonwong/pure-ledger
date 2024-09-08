@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import BigNumber from "bignumber.js";
 import { DollarSign, HandCoins, WalletCards } from "lucide-react";
 import { Card } from "@easy-shadcn/react";
-import { BillType } from "@/types";
+import { BillType } from "@/domain/bill";
 import { useQueryBills } from "@/store/bill";
 
 interface BillSummaryProps {

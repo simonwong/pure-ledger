@@ -4,7 +4,7 @@ import {
   UpdateDBData,
 } from "@/infrastructure/dbType";
 
-export enum BillType {
+enum BillType {
   /** 支出 */
   EXPEND = 1,
   /** 收入 */
@@ -12,7 +12,7 @@ export enum BillType {
 }
 
 export interface BillTDO extends BaseDBData {
-  ledger_id?: number;
+  ledger_id: number;
   parent_bill_id?: number;
   name: string;
   type: BillType;

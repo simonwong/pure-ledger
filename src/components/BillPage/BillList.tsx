@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Card } from "@easy-shadcn/react";
-import { BillType } from "@/types";
+import { BillType } from "@/domain/bill";
 import { Button, DropdownMenu } from "@easy-shadcn/react";
 import { DollarSign, EllipsisVertical, HandCoins } from "lucide-react";
 import { ImageList } from "../ImageList";
@@ -69,7 +69,7 @@ const BillList: React.FC<BillListProps> = ({ ledgerId }) => {
                   </p>
                   <p className="text-sm text-muted-foreground">{item.note}</p>
                 </div>
-                <div>{<ImageList data={item.file_path?.split(",")} />}</div>
+                <div>{<ImageList data={item.filePaths} />}</div>
                 <div className="ml-auto font-medium">
                   {item.type === BillType.EXPEND ? "-" : "+"}
                   {item.amount}

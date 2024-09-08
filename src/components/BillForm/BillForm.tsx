@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { z } from "zod";
 import { Button, DatePicker, Form, FormItem, Input } from "@easy-shadcn/react";
 import { useMutationCreateBill, useMutationUpdateBill } from "@/store/bill";
-import { BillTDO, BillType, CreateBillInput } from "@/types";
+import { BillType } from "@/domain/bill";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import SwitchType from "./SwitchType";
 import FileUploader from "../FileUploader";
 import { Loader2 } from "lucide-react";
+import { Bill } from "@/domain/bill";
 
 const FormSchema = z.object({
   name: z
@@ -26,14 +27,14 @@ const FormSchema = z.object({
   type: z.nativeEnum(BillType),
   date: z.date(),
   note: z.optional(z.string()),
-  file_path: z.array(z.string()).optional(),
+  filePaths: z.array(z.string()).optional(),
 });
 
 type FormData = z.infer<typeof FormSchema>;
 
 export interface BillFormProps {
   ledgerId: number;
-  data?: BillTDO;
+  data?: Bill;
   defaultData?: {
     type: BillType;
   };
@@ -65,21 +66,18 @@ export const BillForm: React.FC<BillFormProps> = ({
 
   useEffect(() => {
     if (data) {
-      const { file_path, date, ...resetData } = data;
+      const { filePaths, date, ...resetData } = data;
       form.reset({
         ...resetData,
         date: new Date(date),
-        file_path: file_path?.split(","),
       });
     }
   }, []);
 
   const handleSubmit = async (formData: FormData) => {
-    const submitData: CreateBillInput = {
+    const submitData = {
       ...formData,
-      ledger_id: ledgerId,
       date: format(formData.date, "yyyy-MM-dd HH:mm:ss"),
-      file_path: formData.file_path?.join(",") || undefined,
     };
 
     if (isEdit) {
@@ -90,6 +88,7 @@ export const BillForm: React.FC<BillFormProps> = ({
     } else {
       await createBill.mutateAsync({
         ...submitData,
+        ledgerId,
       });
     }
     onFinish?.();
@@ -178,7 +177,7 @@ export const BillForm: React.FC<BillFormProps> = ({
             />
             <FormItem
               control={form.control}
-              name="file_path"
+              name="filePaths"
               label="文件"
               render={({ field }) => (
                 <FileUploader
