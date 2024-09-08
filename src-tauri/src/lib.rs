@@ -14,7 +14,7 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(
             tauri_plugin_sql::Builder::default()
-                .add_migrations("sqlite:test.db", db::migrate::get_migrate())
+                .add_migrations("sqlite:ledger.db", db::migrate::get_migrate())
                 .build(),
         )
         .run(tauri::generate_context!())

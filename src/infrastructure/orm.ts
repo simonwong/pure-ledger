@@ -1,12 +1,10 @@
 import { db } from "./database";
-import {
-  BillTDO,
-  CreateBillInput,
+import type { BillTDO, CreateBillInput, UpdateBillInput } from "./bill/type";
+import type {
   CreateLedgerInput,
   LedgerDTO,
-  UpdateBillInput,
   UpdateLedgerInput,
-} from "@/types";
+} from "./ledger/type";
 
 type TableName = "ledgers" | "bills";
 

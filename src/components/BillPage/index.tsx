@@ -13,7 +13,7 @@ const BillPage: React.FC<BillPageProps> = () => {
   const currentLedgerId = useGlobalStore((state) => state.currentLedgerId);
   const { data: ledger, isLoading } = useQueryLedger(currentLedgerId);
 
-  if (isLoading || ledger == null) {
+  if (isLoading) {
     return (
       <div className="h-full flex justify-center items-center">
         <Loader2Icon className="animate-spin" />
@@ -21,7 +21,7 @@ const BillPage: React.FC<BillPageProps> = () => {
     );
   }
 
-  if (!currentLedgerId) {
+  if (!currentLedgerId || ledger == null) {
     return (
       <div className="h-full flex justify-center items-center">
         <EmptyPage />
