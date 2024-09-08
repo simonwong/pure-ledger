@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import * as BillsService from "@/infrastructure/bills/api";
+import * as BillsService from "@/infrastructure/bill/api";
 
 export const useQueryBills = (ledgerId: number) => {
   return useQuery({

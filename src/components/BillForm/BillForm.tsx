@@ -53,7 +53,11 @@ export const BillForm: React.FC<BillFormProps> = ({
   const form = Form.useForm<FormData>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
+      name: "",
+      amount: 0,
+      type: defaultData?.type,
       date: new Date(),
+      note: "",
     },
   });
   const type = form.watch("type");
@@ -67,8 +71,6 @@ export const BillForm: React.FC<BillFormProps> = ({
         date: new Date(date),
         file_path: file_path?.split(","),
       });
-    } else {
-      form.reset({ ...defaultData, date: new Date() });
     }
   }, []);
 
@@ -77,7 +79,7 @@ export const BillForm: React.FC<BillFormProps> = ({
       ...formData,
       ledger_id: ledgerId,
       date: format(formData.date, "yyyy-MM-dd HH:mm:ss"),
-      file_path: formData.file_path?.join(","),
+      file_path: formData.file_path?.join(",") || undefined,
     };
 
     if (isEdit) {
@@ -156,7 +158,11 @@ export const BillForm: React.FC<BillFormProps> = ({
                 <DatePicker
                   buttonClassName="w-full"
                   selected={field.value}
-                  onSelect={field.onChange}
+                  onSelect={(val) => {
+                    if (val) {
+                      field.onChange(val);
+                    }
+                  }}
                 />
               )}
             />

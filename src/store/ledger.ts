@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import * as LedgersService from "@/infrastructure/ledgers/api";
+import * as LedgersService from "@/infrastructure/ledger/api";
 
 export const useQueryLedgers = () => {
   return useQuery({
