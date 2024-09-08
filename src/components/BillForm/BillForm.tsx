@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { z } from "zod";
 import { Button, DatePicker, Form, FormItem, Input } from "@easy-shadcn/react";
 import { useMutationCreateBill, useMutationUpdateBill } from "@/store/bill";
@@ -6,7 +6,7 @@ import { BillType } from "@/domain/bill";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import SwitchType from "./SwitchType";
-import FileUploader from "../FileUploader";
+import FileUploader, { FileUploaderAction } from "../FileUploader";
 import { Loader2 } from "lucide-react";
 import { Bill } from "@/domain/bill";
 
@@ -27,7 +27,7 @@ const FormSchema = z.object({
   type: z.nativeEnum(BillType),
   date: z.date(),
   note: z.optional(z.string()),
-  filePaths: z.array(z.string()).optional(),
+  filePaths: z.array(z.any()).optional(),
 });
 
 type FormData = z.infer<typeof FormSchema>;
@@ -64,9 +64,11 @@ export const BillForm: React.FC<BillFormProps> = ({
   const type = form.watch("type");
   const isEdit = !!data;
 
+  const fileUploadRef = useRef<FileUploaderAction>(null);
+
   useEffect(() => {
     if (data) {
-      const { filePaths, date, ...resetData } = data;
+      const { date, ...resetData } = data;
       form.reset({
         ...resetData,
         date: new Date(date),
@@ -75,9 +77,14 @@ export const BillForm: React.FC<BillFormProps> = ({
   }, []);
 
   const handleSubmit = async (formData: FormData) => {
+    const filePaths = fileUploadRef.current
+      ? await fileUploadRef.current.fileChanged()
+      : undefined;
+
     const submitData = {
       ...formData,
       date: format(formData.date, "yyyy-MM-dd HH:mm:ss"),
+      filePaths,
     };
 
     if (isEdit) {
@@ -181,6 +188,7 @@ export const BillForm: React.FC<BillFormProps> = ({
               label="文件"
               render={({ field }) => (
                 <FileUploader
+                  ref={fileUploadRef}
                   ledgerId={ledgerId}
                   value={field.value}
                   onChange={field.onChange}

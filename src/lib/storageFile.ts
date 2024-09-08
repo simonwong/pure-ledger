@@ -97,6 +97,19 @@ export const copyFilesByLedgerId = async (
   return fileNames;
 };
 
+export const copyFileByLedgerId = async (
+  filePath: string,
+  ledgerId: string
+) => {
+  await preflightCheckStorageFold(ledgerId);
+  const realFileName = `${uuidv4()}.${filePath.split(".").at(-1)}`;
+
+  await copyFile(filePath, `${storageFilesPath}/${ledgerId}/${realFileName}`, {
+    toPathBaseDir: BaseDirectory.AppLocalData,
+  });
+  return `${ledgerId}/${realFileName}`;
+};
+
 export const getStorageFilePath = async (fileName: string) => {
   let localDataDir = await appLocalDataDir();
   const filePath = await join(localDataDir, "files", fileName);
