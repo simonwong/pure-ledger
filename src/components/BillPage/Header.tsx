@@ -3,12 +3,12 @@ import { alertModalAction } from "@easy-shadcn/react";
 import { DropdownMenu } from "@easy-shadcn/react";
 import { FilePenLine, Settings2, Trash2 } from "lucide-react";
 import { useLedgerFormModal } from "@/components/LedgerForm";
-import { LedgerDTO } from "@/types";
 import { useMutationDeleteLedger } from "@/store/ledger";
 import { useGlobalStore } from "@/store/global";
+import { Ledger } from "@/domain/ledger";
 
 interface BillHeaderProps {
-  ledger: LedgerDTO;
+  ledger: Ledger;
 }
 
 const BillHeader: React.FC<BillHeaderProps> = ({ ledger }) => {

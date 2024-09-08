@@ -3,11 +3,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@easy-shadcn/react";
 import { Form, FormItem, Input } from "@easy-shadcn/react";
-import { LedgerDTO } from "@/types";
 import {
   useMutationCreateLedger,
   useMutationUpdateLedger,
 } from "@/store/ledger";
+import { Ledger } from "@/domain/ledger";
 
 const FormSchema = z.object({
   name: z
@@ -22,13 +22,17 @@ const FormSchema = z.object({
 type FormData = z.infer<typeof FormSchema>;
 
 export interface LedgerFormProps {
-  data?: LedgerDTO;
+  data?: Ledger;
   onFinish?: () => void;
 }
 
 export const LedgerForm: React.FC<LedgerFormProps> = ({ data, onFinish }) => {
   const form = Form.useForm<FormData>({
     resolver: zodResolver(FormSchema),
+    defaultValues: {
+      name: "",
+      note: "",
+    },
   });
 
   const updateMutation = useMutationUpdateLedger();
