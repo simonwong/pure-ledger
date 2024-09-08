@@ -2,14 +2,16 @@ import React, { useEffect } from "react";
 import { XIcon } from "lucide-react";
 import { getStorageFilePath } from "@/lib/storageFile";
 import ImagePreview from "./ImagePreview";
+import { FileResponse } from "@tauri-apps/plugin-dialog";
+import { convertFileSrc } from "@tauri-apps/api/core";
 
 interface ImageListProps {
-  data?: (string | File)[];
+  data?: (string | FileResponse)[];
   showRemove?: boolean;
   onRemove?: (idx: number) => void;
 }
 
-const getUrlStringList = async (files?: (string | File)[]) => {
+const getUrlStringList = async (files?: (string | FileResponse)[]) => {
   if (!files || files.length === 0) {
     return [];
   }
@@ -17,11 +19,11 @@ const getUrlStringList = async (files?: (string | File)[]) => {
   let res: string[] = [];
 
   for await (const item of files) {
-    if (item instanceof File) {
-      res.push(URL.createObjectURL(item));
-    } else {
+    if (typeof item === "string") {
       const path = await getStorageFilePath(item);
       res.push(path);
+    } else {
+      res.push(convertFileSrc(item.path));
     }
   }
 
