@@ -15,7 +15,7 @@ const BillList: React.FC<BillListProps> = ({ ledgerId }) => {
   const { data: billList = [] } = useQueryBills(ledgerId);
   const deleteBill = useMutationDeleteBill();
 
-  const [billFormModalHost, billFormModalAction] = useBillFormModal();
+  const [billFormModalAction] = useBillFormModal();
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -108,7 +108,6 @@ const BillList: React.FC<BillListProps> = ({ ledgerId }) => {
           </div>
         }
       />
-      {billFormModalHost}
     </div>
   );
 };

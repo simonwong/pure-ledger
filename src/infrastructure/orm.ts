@@ -70,16 +70,17 @@ export class ORM {
     const keys = Object.keys(data) as Array<keyof InsertParams[T]>;
 
     if (keys.length === 0) {
-      return;
+      return null;
     }
 
     const queryCols = keys.join(", ");
     const queryValReplaces = keys.map((_, idx) => `$${idx + 1}`).join(", ");
 
-    await db.execute(
+    const res = await db.execute(
       `INSERT INTO ${tableName} (${queryCols}) VALUES (${queryValReplaces})`,
       keys.map((key) => data[key])
     );
+    return res.lastInsertId;
   }
 
   static async updateById<T extends TableName>(
