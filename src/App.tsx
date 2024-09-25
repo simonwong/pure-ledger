@@ -1,6 +1,7 @@
 import LedgerMenu from "@/components/LedgerMenu";
 import BillPage from "@/components/BillPage";
-import { AlertModalHost } from "@easy-shadcn/react";
+import DevTool from "@/components/DevTool";
+import { ModalHost } from "@easy-shadcn/react";
 
 import "./global.css";
 
@@ -15,7 +16,8 @@ function App() {
           <BillPage />
         </div>
       </div>
-      <AlertModalHost />
+      <ModalHost />
+      <DevTool />
     </>
   );
 }

@@ -4,11 +4,16 @@ import { DollarSign, HandCoins } from "lucide-react";
 import { Toggle } from "@easy-shadcn/react";
 
 interface SwitchTypeProps {
+  disabled?: boolean;
   value: BillType;
   onChange: (val: BillType) => void;
 }
 
-const SwitchType: React.FC<SwitchTypeProps> = ({ value, onChange }) => {
+const SwitchType: React.FC<SwitchTypeProps> = ({
+  disabled,
+  value,
+  onChange,
+}) => {
   const handleChange = (val: string) => {
     onChange(Number(val));
   };
@@ -16,6 +21,7 @@ const SwitchType: React.FC<SwitchTypeProps> = ({ value, onChange }) => {
   return (
     <Toggle
       type="single"
+      disabled={disabled}
       value={String(value)}
       onValueChange={(value) => {
         if (value) {

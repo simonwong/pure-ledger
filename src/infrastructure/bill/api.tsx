@@ -22,7 +22,8 @@ export const getBill = async (billId: number) => {
 };
 
 export const createBill = async (data: CreateBill) => {
-  await ORM.insert("bills", createBillToInput(data));
+  const id = await ORM.insert("bills", createBillToInput(data));
+  return id;
 };
 
 export const updateBill = async (data: UpdateBill) => {

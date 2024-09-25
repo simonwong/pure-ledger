@@ -1,43 +1,72 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import { z } from "zod";
 import { Button, DatePicker, Form, FormItem, Input } from "@easy-shadcn/react";
 import { useMutationCreateBill, useMutationUpdateBill } from "@/store/bill";
 import { BillType } from "@/domain/bill";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import SwitchType from "./SwitchType";
 import FileUploader, { FileUploaderAction } from "../FileUploader";
 import { Bill } from "@/domain/bill";
-import { BillFormData, useBillForm } from "./form";
-import { useMultipleBill } from "./useMultipleBill";
 
-export interface BillFormProps {
-  ledgerId: number;
-  data?: Bill;
-  defaultData?: {
-    type: BillType;
-  };
+const FormSchema = z.object({
+  name: z
+    .string({
+      required_error: "请输入账单名称",
+    })
+    .trim()
+    .min(1, "至少输入1个字"),
+  amount: z
+    .number({
+      required_error: "请输入金额",
+      invalid_type_error: "请输入有效的金额",
+    })
+    .min(0, "最小金额填0")
+    .safe("超出金额限制"),
+  type: z.nativeEnum(BillType),
+  date: z.date(),
+  note: z.optional(z.string()),
+  filePaths: z.array(z.any()).optional(),
+});
+
+type FormData = z.infer<typeof FormSchema>;
+
+export type SubBillFormProps = {
   onFinish?: () => void;
-}
+} & (
+  | {
+      parentBillData: Bill;
+      data?: Bill;
+    }
+  | {
+      parentBillData?: Bill;
+      data: Bill;
+    }
+);
 
-export const BillForm: React.FC<BillFormProps> = ({
-  ledgerId,
+export const SubBillForm: React.FC<SubBillFormProps> = ({
+  parentBillData,
   data,
-  defaultData,
   onFinish,
 }) => {
+  const [loading, setLoading] = useState(false);
   const createBill = useMutationCreateBill();
   const updateBill = useMutationUpdateBill();
-  const [form] = useBillForm(defaultData);
+
+  const form = Form.useForm<FormData>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      name: "",
+      amount: 0,
+      type: parentBillData?.type,
+      date: new Date(),
+      note: "",
+    },
+  });
   const type = form.watch("type");
   const isEdit = !!data;
+
   const fileUploadRef = useRef<FileUploaderAction>(null);
-  const {
-    MultipleBillSwitch,
-    submitAndAddSubBill,
-    isSubmitAndAddSubBill,
-    SubBillListNode,
-  } = useMultipleBill({
-    isEdit,
-  });
 
   useEffect(() => {
     if (data) {
@@ -49,7 +78,7 @@ export const BillForm: React.FC<BillFormProps> = ({
     }
   }, []);
 
-  const handleSubmit = async (formData: BillFormData) => {
+  const handleSubmit = async (formData: FormData) => {
     const filePaths = fileUploadRef.current
       ? await fileUploadRef.current.fileChanged()
       : undefined;
@@ -66,32 +95,33 @@ export const BillForm: React.FC<BillFormProps> = ({
         ...submitData,
       });
     } else {
-      const billId = await createBill.mutateAsync({
+      await createBill.mutateAsync({
         ...submitData,
-        ledgerId,
+        type: parentBillData!.type,
+        ledgerId: parentBillData!.ledgerId,
+        parentBillId: parentBillData!.id,
       });
-      submitAndAddSubBill(billId);
     }
-
     onFinish?.();
+  };
+
+  const handleConfirm = async (formData: FormData) => {
+    setLoading(true);
+    try {
+      await handleSubmit?.(formData);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const typeText = type === BillType.EXPEND ? "支出" : "收入";
 
   return (
-    <Form form={form} onSubmit={(e) => e.preventDefault()}>
+    <Form form={form} onSubmit={form.handleSubmit(handleConfirm)}>
       <div className="py-4 space-y-4">
         <div className="flex gap-4 items-center">
-          <div className="flex-1">
-            <SwitchType
-              disabled={isEdit}
-              value={type}
-              onChange={(val) => {
-                form.setValue("type", val);
-              }}
-            />
-          </div>
-          <div className="flex-1">{MultipleBillSwitch}</div>
+          <div className="flex-1"></div>
+          <div className="flex-1"></div>
         </div>
         <div className="flex gap-4">
           <div className="flex-1 space-y-4">
@@ -156,7 +186,7 @@ export const BillForm: React.FC<BillFormProps> = ({
               render={({ field }) => (
                 <FileUploader
                   ref={fileUploadRef}
-                  ledgerId={ledgerId}
+                  ledgerId={(parentBillData?.ledgerId || data?.ledgerId)!}
                   value={field.value}
                   onChange={field.onChange}
                 />
@@ -165,10 +195,9 @@ export const BillForm: React.FC<BillFormProps> = ({
           </div>
         </div>
       </div>
-      {SubBillListNode}
-      <div className="flex justify-end space-x-2">
-        <Button onClick={form.handleSubmit(handleSubmit)}>
-          保存{isSubmitAndAddSubBill && "并添加子账单"}
+      <div className="flex justify-end">
+        <Button loading={loading} type="submit">
+          保存
         </Button>
       </div>
     </Form>

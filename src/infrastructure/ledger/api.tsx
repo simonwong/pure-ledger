@@ -21,7 +21,8 @@ export const getLedger = async (ledgerId: number) => {
 };
 
 export const createLedger = async (data: CreateLedger) => {
-  await ORM.insert("ledgers", createLedgerToInput(data));
+  const id = await ORM.insert("ledgers", createLedgerToInput(data));
+  return id;
 };
 
 export const updateLedger = async (data: UpdateLedger) => {

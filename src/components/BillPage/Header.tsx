@@ -1,5 +1,5 @@
 import * as React from "react";
-import { alertModalAction } from "@easy-shadcn/react";
+import { modalAction } from "@easy-shadcn/react";
 import { DropdownMenu } from "@easy-shadcn/react";
 import { FilePenLine, Settings2, Trash2 } from "lucide-react";
 import { useLedgerFormModal } from "@/components/LedgerForm";
@@ -44,7 +44,7 @@ const BillHeader: React.FC<BillHeaderProps> = ({ ledger }) => {
                 key: "trash",
                 className: "focus:bg-red-500",
                 onClick: () => {
-                  alertModalAction.confirm({
+                  modalAction.confirm({
                     title: "是否确认删除",
                     content: "危险操作哦，删除后这个账本的数据将无法恢复",
                     onConfirm: async () => {
