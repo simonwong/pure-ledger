@@ -1,11 +1,11 @@
 import * as React from "react";
 import { Card } from "@easy-shadcn/react";
-import { BillType } from "@/domain/bill";
-import { Button, DropdownMenu } from "@easy-shadcn/react";
-import { DollarSign, EllipsisVertical, HandCoins } from "lucide-react";
-import { ImageList } from "../ImageList";
-import { useQueryBills, useMutationDeleteBill } from "@/store/bill";
+import { Bill, BillType } from "@/domain/bill";
+import { Button } from "@easy-shadcn/react";
+import { DollarSignIcon, HandCoinsIcon } from "lucide-react";
+import { useQueryBills } from "@/store/bill";
 import { useBillFormModal } from "../BillForm/useBillFormModal";
+import BillItem from "./BillItem";
 
 interface BillListProps {
   ledgerId: number;
@@ -13,9 +13,12 @@ interface BillListProps {
 
 const BillList: React.FC<BillListProps> = ({ ledgerId }) => {
   const { data: billList = [] } = useQueryBills(ledgerId);
-  const deleteBill = useMutationDeleteBill();
-
   const [billFormModalAction] = useBillFormModal();
+  const renderBillList = (list: Bill[]) => {
+    return list.map((item) => (
+      <BillItem key={item.id} bill={item} ledgerId={ledgerId} />
+    ));
+  };
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -38,7 +41,7 @@ const BillList: React.FC<BillListProps> = ({ ledgerId }) => {
                   });
                 }}
               >
-                <HandCoins className="mr-2 h-4 w-4" /> 添加支出账单
+                <HandCoinsIcon className="mr-2 h-4 w-4" /> 添加支出账单
               </Button>
               <Button
                 size="sm"
@@ -53,59 +56,17 @@ const BillList: React.FC<BillListProps> = ({ ledgerId }) => {
                   });
                 }}
               >
-                <DollarSign className="mr-2 h-4 w-4" /> 添加收入账单
+                <DollarSignIcon className="mr-2 h-4 w-4" /> 添加收入账单
               </Button>
             </div>
           </div>
         }
         description={`总共 ${billList.length} 条账单`}
+        contentProps={{
+          className: "p-0",
+        }}
         content={
-          <div className="space-y-8 min-w-96">
-            {billList.map((item) => (
-              <div key={item.id} className="flex items-center space-x-12">
-                <div className="flex-1 space-y-1">
-                  <p className="text-sm font-medium leading-none">
-                    {item.name}
-                  </p>
-                  <p className="text-sm text-muted-foreground">{item.note}</p>
-                </div>
-                <div>{<ImageList data={item.filePaths} />}</div>
-                <div className="ml-auto font-medium">
-                  {item.type === BillType.EXPEND ? "-" : "+"}
-                  {item.amount}
-                </div>
-                <div className="text-sm text-muted-foreground">{item.date}</div>
-                <div>
-                  <DropdownMenu
-                    menu={[
-                      {
-                        name: "编辑",
-                        key: "edit",
-                        onClick: () => {
-                          billFormModalAction.open({
-                            ledgerId,
-                            data: item,
-                          });
-                        },
-                      },
-                      {
-                        name: "删除",
-                        key: "delete",
-                        onClick: () => deleteBill.mutateAsync(item),
-                      },
-                    ]}
-                    contentProps={{
-                      className: "w-9",
-                    }}
-                  >
-                    <Button variant="outline" size="sm">
-                      <EllipsisVertical size={16} />
-                    </Button>
-                  </DropdownMenu>
-                </div>
-              </div>
-            ))}
-          </div>
+          <div className="space-y-2 min-w-96">{renderBillList(billList)}</div>
         }
       />
     </div>

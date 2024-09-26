@@ -7,13 +7,14 @@ import {
   updateBillToInput,
 } from "./transform";
 import { Bill, CreateBill, UpdateBill } from "@/domain/bill";
+import { compareDesc } from "date-fns";
 
 export const getBills = async (ledgerId: number) => {
   const res = await ORM.selectAll("bills", {
     ledger_id: ledgerId,
   });
 
-  return dtoListToBills(res);
+  return dtoListToBills(res.sort((a, b) => compareDesc(a.date, b.date)));
 };
 
 export const getBill = async (billId: number) => {

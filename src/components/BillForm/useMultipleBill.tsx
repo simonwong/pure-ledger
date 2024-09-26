@@ -1,15 +1,24 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button, Switch, Tooltip } from "@easy-shadcn/react";
 import { CircleAlertIcon } from "lucide-react";
 import { useSubBillFormModal } from "./useSubBillFormModal";
 import { getBill } from "@/infrastructure/bill/api";
+import { Bill } from "@/domain/bill";
 
 interface MultipleBillProps {
   isEdit: boolean;
+  data?: Bill;
+  defaultIsMultiple?: boolean;
 }
 
-export const useMultipleBill = ({ isEdit }: MultipleBillProps) => {
-  const [isMultipleBills, setIsMultipleBills] = useState(false);
+export const useMultipleBill = ({
+  isEdit,
+  data,
+  defaultIsMultiple,
+}: MultipleBillProps) => {
+  const [isMultipleBills, setIsMultipleBills] = useState(
+    defaultIsMultiple || false
+  );
   const [subBillAction] = useSubBillFormModal();
   const MultipleBillSwitch = (
     <div className="flex gap-2 items-center">
@@ -41,7 +50,23 @@ export const useMultipleBill = ({ isEdit }: MultipleBillProps) => {
         <Button variant="secondary">添加子账单</Button>
       </div> */}
         <div className="flex items-center justify-center py-4">
-          <Button className="border-none" variant="secondary">
+          <Button
+            onClick={() => {
+              if (data) {
+                console.log("data", data);
+                subBillAction.open(
+                  {
+                    parentBillData: data,
+                  },
+                  {
+                    billName: data.name,
+                  }
+                );
+              }
+            }}
+            className="border-none"
+            variant="secondary"
+          >
             添加子账单
           </Button>
         </div>
@@ -52,7 +77,6 @@ export const useMultipleBill = ({ isEdit }: MultipleBillProps) => {
   const submitAndAddSubBill = async (billId: number | null) => {
     if (isSubmitAndAddSubBill && billId) {
       const billData = await getBill(billId);
-      console.log("billData", billData);
       if (billData) {
         subBillAction.open(
           {
