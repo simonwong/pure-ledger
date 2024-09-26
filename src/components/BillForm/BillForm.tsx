@@ -37,6 +37,8 @@ export const BillForm: React.FC<BillFormProps> = ({
     SubBillListNode,
   } = useMultipleBill({
     isEdit,
+    data,
+    defaultIsMultiple: !!data?.subBills?.length,
   });
 
   useEffect(() => {

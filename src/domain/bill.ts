@@ -16,10 +16,12 @@ export interface Bill extends BaseDomain {
   date: string;
   note?: string;
   filePaths?: string[];
+  subBills?: Bill[];
+  actualAmount: number;
 }
 
-export type CreateBill = CreateDomain<Bill>;
+export type CreateBill = Omit<CreateDomain<Bill>, "actualAmount" | "subBills">;
 
-export type UpdateBill = UpdateDomain<Bill>;
+export type UpdateBill = Omit<UpdateDomain<Bill>, "actualAmount" | "subBills">;
 
 export type DeleteBill = Bill;

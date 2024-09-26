@@ -1,5 +1,6 @@
 import { CreateBill, Bill, UpdateBill } from "@/domain/bill";
 import { CreateBillInput, BillTDO, UpdateBillInput } from "./type";
+import BigNumber from "bignumber.js";
 
 export const dtoToBill = (dto: BillTDO): Bill => {
   return {
@@ -7,6 +8,7 @@ export const dtoToBill = (dto: BillTDO): Bill => {
     name: dto.name,
     type: dto.type,
     amount: dto.amount,
+    actualAmount: dto.amount,
     date: dto.date,
     note: dto.note,
     filePaths: dto.file_path ? dto.file_path.split(",") : undefined,
@@ -18,7 +20,33 @@ export const dtoToBill = (dto: BillTDO): Bill => {
 };
 
 export const dtoListToBills = (dtoList: BillTDO[]): Bill[] => {
-  return dtoList.map((item) => dtoToBill(item));
+  const res: Bill[] = [];
+  const parentBillMap: Record<string, Bill[]> = {};
+
+  const billList = dtoList.map((item) => dtoToBill(item));
+
+  billList.forEach((item) => {
+    if (item.parentBillId) {
+      parentBillMap[item.parentBillId] ||= [];
+      parentBillMap[item.parentBillId].push(item);
+    }
+  });
+
+  billList.forEach((item) => {
+    if (!item.parentBillId) {
+      const subBills = parentBillMap[item.id];
+
+      if (subBills) {
+        item.subBills = subBills;
+        let amount = BigNumber(0);
+        subBills.forEach((bill) => (amount = amount.plus(bill.amount)));
+        item.actualAmount = amount.toNumber();
+      }
+      res.push(item);
+    }
+  });
+
+  return res;
 };
 
 export const createBillToInput = (data: CreateBill): CreateBillInput => {

@@ -8,12 +8,12 @@ export const useQueryBills = (ledgerId: number) => {
   });
 };
 
-export const useQueryBill = (billId: number | null) => {
-  return useQuery({
-    queryKey: ["bill", billId],
-    queryFn: billId ? () => BillsService.getBill(billId) : () => null,
-  });
-};
+// export const useQueryBill = (billId: number | null) => {
+//   return useQuery({
+//     queryKey: ["bill", billId],
+//     queryFn: billId ? () => BillsService.getBill(billId) : () => null,
+//   });
+// };
 
 export const useMutationCreateBill = () => {
   const queryClient = useQueryClient();
