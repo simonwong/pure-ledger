@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Button, Switch, Tooltip } from "@easy-shadcn/react";
 import { CircleAlertIcon } from "lucide-react";
-import { useSubBillFormModal } from "./useSubBillFormModal";
 import { getBill } from "@/infrastructure/bill/api";
 import { Bill } from "@/domain/bill";
+import { SubBillFormModal } from "./actions";
+import SubBillItem from "../BillPage/SubBillItem";
 
 interface MultipleBillProps {
   isEdit: boolean;
@@ -19,7 +20,6 @@ export const useMultipleBill = ({
   const [isMultipleBills, setIsMultipleBills] = useState(
     defaultIsMultiple || false
   );
-  const [subBillAction] = useSubBillFormModal();
   const MultipleBillSwitch = (
     <div className="flex gap-2 items-center">
       <Switch
@@ -46,15 +46,16 @@ export const useMultipleBill = ({
   const SubBillListNode =
     isEdit && isMultipleBills ? (
       <div className="border border-muted rounded-md my-4 p-4">
-        {/* <div className="flex">
-        <Button variant="secondary">添加子账单</Button>
-      </div> */}
+        <div className="space-y-2">
+          {data?.subBills?.map((subBill) => (
+            <SubBillItem key={subBill.id} subBill={subBill} parentBill={data} />
+          ))}
+        </div>
         <div className="flex items-center justify-center py-4">
           <Button
             onClick={() => {
               if (data) {
-                console.log("data", data);
-                subBillAction.open(
+                SubBillFormModal.open(
                   {
                     parentBillData: data,
                   },
@@ -78,7 +79,7 @@ export const useMultipleBill = ({
     if (isSubmitAndAddSubBill && billId) {
       const billData = await getBill(billId);
       if (billData) {
-        subBillAction.open(
+        SubBillFormModal.open(
           {
             parentBillData: billData,
           },

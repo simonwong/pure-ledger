@@ -4,8 +4,9 @@ import { Bill } from "@/domain/bill";
 import { Button, DropdownMenu } from "@easy-shadcn/react";
 import { useMutationDeleteBill } from "@/store/bill";
 import { EllipsisVerticalIcon } from "lucide-react";
-import { useBillFormModal } from "../BillForm";
 import AmountDisplay from "./AmountDisplay";
+import { useBillFormModal } from "../BillForm/actions";
+import SubBillItem from "./SubBillItem";
 
 interface BillItemProps {
   ledgerId: number;
@@ -14,61 +15,24 @@ interface BillItemProps {
 
 const BillItem: React.FC<BillItemProps> = ({ ledgerId, bill }) => {
   const deleteBill = useMutationDeleteBill();
-  const [billFormModalAction] = useBillFormModal();
-
   const hasSubBill = !!bill.subBills?.length;
 
-  const renderSubBillList = (list: Bill[]) => {
+  const renderSubBillList = (list: Bill[], parentBill: Bill) => {
     return (
       <div className="bg-gray-100 p-6 space-y-4">
         {list.map((item) => (
-          <div key={item.id} className="flex items-center space-x-12">
-            <div className="flex-1 space-y-1">
-              <p className="text-sm font-medium leading-none">{item.name}</p>
-              <p className="text-sm text-muted-foreground">{item.note}</p>
-            </div>
-            <div>{<ImageList data={item.filePaths} />}</div>
-            <div className="ml-auto">
-              <AmountDisplay
-                className="font-medium"
-                type={item.type}
-                amount={item.amount}
-              />
-            </div>
-            <div className="text-sm text-muted-foreground">{item.date}</div>
-            <div>
-              <DropdownMenu
-                menu={[
-                  {
-                    name: "编辑",
-                    key: "edit",
-                    onClick: () => {
-                      billFormModalAction.open({
-                        ledgerId,
-                        data: item,
-                      });
-                    },
-                  },
-                  {
-                    name: "删除",
-                    key: "delete",
-                    onClick: () => deleteBill.mutateAsync(item),
-                  },
-                ]}
-                contentProps={{
-                  className: "w-9",
-                }}
-              >
-                <Button variant="outline" size="sm">
-                  <EllipsisVerticalIcon size={16} />
-                </Button>
-              </DropdownMenu>
-            </div>
-          </div>
+          <SubBillItem key={item.id} subBill={item} parentBill={parentBill} />
         ))}
       </div>
     );
   };
+  const billFormModal = useBillFormModal(
+    {
+      ledgerId,
+      data: bill,
+    },
+    [ledgerId, bill]
+  );
 
   return (
     <div>
@@ -96,10 +60,7 @@ const BillItem: React.FC<BillItemProps> = ({ ledgerId, bill }) => {
                 name: "编辑",
                 key: "edit",
                 onClick: () => {
-                  billFormModalAction.open({
-                    ledgerId,
-                    data: bill,
-                  });
+                  billFormModal.open();
                 },
               },
               {
@@ -112,13 +73,13 @@ const BillItem: React.FC<BillItemProps> = ({ ledgerId, bill }) => {
               className: "w-9",
             }}
           >
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="icon">
               <EllipsisVerticalIcon size={16} />
             </Button>
           </DropdownMenu>
         </div>
       </div>
-      {hasSubBill && renderSubBillList(bill.subBills!)}
+      {hasSubBill && renderSubBillList(bill.subBills!, bill)}
     </div>
   );
 };
