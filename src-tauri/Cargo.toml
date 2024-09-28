@@ -1,6 +1,6 @@
 [package]
 name = "pure-ledger"
-version = "0.0.0"
+version = "0.0.2"
 description = "Pure Ledger"
 authors = ["Simon Wong"]
 edition = "2021"
