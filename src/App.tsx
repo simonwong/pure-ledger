@@ -1,6 +1,5 @@
 import LedgerMenu from "@/components/LedgerMenu";
 import BillPage from "@/components/BillPage";
-import DevTool from "@/components/DevTool";
 import { ModalHost } from "@easy-shadcn/react";
 
 import "./global.css";
@@ -17,7 +16,6 @@ function App() {
         </div>
       </div>
       <ModalHost />
-      <DevTool />
     </>
   );
 }
