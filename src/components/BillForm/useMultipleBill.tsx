@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button, Switch, Tooltip } from "@easy-shadcn/react";
 import { CircleAlertIcon } from "lucide-react";
 import { getBill } from "@/infrastructure/bill/api";
 import { Bill } from "@/domain/bill";
 import { SubBillFormModal } from "./actions";
 import SubBillItem from "../BillPage/SubBillItem";
+import BigNumber from "bignumber.js";
 
 interface MultipleBillProps {
   isEdit: boolean;
@@ -43,6 +44,14 @@ export const useMultipleBill = ({
       </Tooltip>
     </div>
   );
+
+  const resetAmount = useMemo(() => {
+    if (data) {
+      return BigNumber(data.amount).minus(data.actualAmount).toNumber();
+    }
+    return null;
+  }, [data?.amount, data?.actualAmount]);
+
   const SubBillListNode =
     isEdit && isMultipleBills ? (
       <div className="border border-muted rounded-md my-4 p-4">
@@ -51,26 +60,29 @@ export const useMultipleBill = ({
             <SubBillItem key={subBill.id} subBill={subBill} parentBill={data} />
           ))}
         </div>
-        <div className="flex items-center justify-center py-4">
-          <Button
-            onClick={() => {
-              if (data) {
-                SubBillFormModal.open(
-                  {
-                    parentBillData: data,
-                  },
-                  {
-                    billName: data.name,
-                  }
-                );
-              }
-            }}
-            className="border-none"
-            variant="secondary"
-          >
-            添加子账单
-          </Button>
-        </div>
+        {data && data.amount > data.actualAmount && (
+          <div className="py-4 text-center">
+            <Button
+              onClick={() => {
+                if (data) {
+                  SubBillFormModal.open(
+                    {
+                      parentBillData: data,
+                    },
+                    {
+                      billName: data.name,
+                    }
+                  );
+                }
+              }}
+              className="border-none"
+              variant="secondary"
+            >
+              添加子账单
+            </Button>
+            <p className="mt-2">还有 {resetAmount} 元未记录</p>
+          </div>
+        )}
       </div>
     ) : null;
 

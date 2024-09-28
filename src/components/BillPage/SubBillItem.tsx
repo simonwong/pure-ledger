@@ -40,6 +40,7 @@ const SubBillItem: React.FC<SubBillItemProps> = ({ subBill, parentBill }) => {
                 SubBillFormModal.open(
                   {
                     data: subBill,
+                    parentBillData: parentBill,
                   },
                   {
                     billName: parentBill.name,

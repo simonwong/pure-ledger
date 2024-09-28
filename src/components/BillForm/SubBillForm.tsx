@@ -5,44 +5,40 @@ import { useMutationCreateBill, useMutationUpdateBill } from "@/store/bill";
 import { BillType } from "@/domain/bill";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import SwitchType from "./SwitchType";
 import FileUploader, { FileUploaderAction } from "../FileUploader";
 import { Bill } from "@/domain/bill";
+import BigNumber from "bignumber.js";
 
-const FormSchema = z.object({
-  name: z
-    .string({
-      required_error: "请输入账单名称",
-    })
-    .trim()
-    .min(1, "至少输入1个字"),
-  amount: z
-    .number({
-      required_error: "请输入金额",
-      invalid_type_error: "请输入有效的金额",
-    })
-    .min(0, "最小金额填0")
-    .safe("超出金额限制"),
-  type: z.nativeEnum(BillType),
-  date: z.date(),
-  note: z.optional(z.string()),
-  filePaths: z.array(z.any()).optional(),
-});
+const createDynamicFormSchema = (maxAmount: number, maxTip: string) => {
+  return z.object({
+    name: z
+      .string({
+        required_error: "请输入账单名称",
+      })
+      .trim()
+      .min(1, "至少输入1个字"),
+    amount: z
+      .number({
+        required_error: "请输入金额",
+        invalid_type_error: "请输入有效的金额",
+      })
+      .min(0, "最小金额填0")
+      .max(maxAmount, maxTip)
+      .safe("超出金额限制"),
+    type: z.nativeEnum(BillType),
+    date: z.date(),
+    note: z.optional(z.string()),
+    filePaths: z.array(z.any()).optional(),
+  });
+};
 
-type FormData = z.infer<typeof FormSchema>;
+type FormData = z.infer<ReturnType<typeof createDynamicFormSchema>>;
 
 export type SubBillFormProps = {
   onFinish?: () => void;
-} & (
-  | {
-      parentBillData: Bill;
-      data?: Bill;
-    }
-  | {
-      parentBillData?: Bill;
-      data: Bill;
-    }
-);
+  parentBillData: Bill;
+  data?: Bill;
+};
 
 export const SubBillForm: React.FC<SubBillFormProps> = ({
   parentBillData,
@@ -54,7 +50,23 @@ export const SubBillForm: React.FC<SubBillFormProps> = ({
   const updateBill = useMutationUpdateBill();
 
   const form = Form.useForm<FormData>({
-    resolver: zodResolver(FormSchema),
+    resolver: (...props) => {
+      const resetAmount = BigNumber(parentBillData?.amount).minus(
+        parentBillData?.actualAmount
+      );
+      let maxAmount = Number.MAX_SAFE_INTEGER;
+      if (data) {
+        maxAmount = resetAmount.plus(data.amount).toNumber();
+      } else {
+        maxAmount = resetAmount.toNumber();
+      }
+      return zodResolver(
+        createDynamicFormSchema(
+          maxAmount,
+          `账单总金额为${parentBillData?.amount}，最多可输入${maxAmount}`
+        )
+      )(...props);
+    },
     defaultValues: {
       name: "",
       amount: 0,
