@@ -1,7 +1,7 @@
 import React from "react";
 import { ImageList } from "../ImageList";
 import { Bill } from "@/domain/bill";
-import { Button, DropdownMenu } from "@easy-shadcn/react";
+import { Button, DropdownMenu, modalAction } from "@easy-shadcn/react";
 import { useMutationDeleteBill } from "@/store/bill";
 import { EllipsisVerticalIcon } from "lucide-react";
 import AmountDisplay from "./AmountDisplay";
@@ -46,9 +46,9 @@ const BillItem: React.FC<BillItemProps> = ({ ledgerId, bill }) => {
           <AmountDisplay
             className="font-medium"
             type={bill.type}
-            amount={hasSubBill ? bill.actualAmount : bill.amount}
+            amount={bill.isInstallment ? bill.actualAmount : bill.amount}
           />
-          {hasSubBill && (
+          {bill.isInstallment && (
             <span className="text-muted-foreground"> ({bill.amount})</span>
           )}
         </div>
@@ -66,7 +66,15 @@ const BillItem: React.FC<BillItemProps> = ({ ledgerId, bill }) => {
               {
                 name: "删除",
                 key: "delete",
-                onClick: () => deleteBill.mutateAsync(bill),
+                onClick: () => {
+                  modalAction.confirm({
+                    title: "是否确认删除",
+                    content: "删除后无法找回",
+                    onConfirm: () => {
+                      deleteBill.mutateAsync(bill);
+                    },
+                  });
+                },
               },
             ]}
             contentProps={{

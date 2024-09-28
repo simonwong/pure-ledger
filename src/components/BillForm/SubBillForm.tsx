@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import FileUploader, { FileUploaderAction } from "../FileUploader";
 import { Bill } from "@/domain/bill";
 import BigNumber from "bignumber.js";
+import { set } from "date-fns";
 
 const createDynamicFormSchema = (maxAmount: number, maxTip: string) => {
   return z.object({
@@ -26,6 +27,7 @@ const createDynamicFormSchema = (maxAmount: number, maxTip: string) => {
       .max(maxAmount, maxTip)
       .safe("超出金额限制"),
     type: z.nativeEnum(BillType),
+    isInstallment: z.boolean(),
     date: z.date(),
     note: z.optional(z.string()),
     filePaths: z.array(z.any()).optional(),
@@ -71,7 +73,8 @@ export const SubBillForm: React.FC<SubBillFormProps> = ({
       name: "",
       amount: 0,
       type: parentBillData?.type,
-      date: new Date(),
+      date: set(new Date(), { hours: 0, minutes: 0, seconds: 0 }),
+      isInstallment: false,
       note: "",
     },
   });

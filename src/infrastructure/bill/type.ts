@@ -20,6 +20,7 @@ export interface BillTDO extends BaseDBData {
   date: string;
   note?: string;
   file_path?: string;
+  is_installment: 0 | 1;
 }
 
 export type CreateBillInput = CreateDBData<BillTDO>;

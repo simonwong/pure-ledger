@@ -18,6 +18,7 @@ export interface Bill extends BaseDomain {
   filePaths?: string[];
   subBills?: Bill[];
   actualAmount: number;
+  isInstallment: boolean;
 }
 
 export type CreateBill = Omit<CreateDomain<Bill>, "actualAmount" | "subBills">;

@@ -15,7 +15,7 @@ const AmountDisplay: React.FC<AmountDisplayProps> = ({
   placeholder,
 }) => {
   if (amount === 0 || amount === "0" || !amount) {
-    return placeholder || "0";
+    return <span className={className}>{placeholder || "0"}</span>;
   }
 
   return (

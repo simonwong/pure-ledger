@@ -1,6 +1,7 @@
 import { BillType } from "@/domain/bill";
 import { Form } from "@easy-shadcn/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { set } from "date-fns";
 import { z } from "zod";
 
 export const BillFormSchema = z.object({
@@ -18,6 +19,7 @@ export const BillFormSchema = z.object({
     .min(0, "最小金额填0")
     .safe("超出金额限制"),
   type: z.nativeEnum(BillType),
+  isInstallment: z.boolean(),
   date: z.date(),
   note: z.optional(z.string()),
   filePaths: z.array(z.any()).optional(),
@@ -31,8 +33,9 @@ export const useBillForm = (defaultData?: Partial<BillFormData>) => {
     defaultValues: {
       name: "",
       amount: 0,
-      date: new Date(),
+      date: set(new Date(), { hours: 0, minutes: 0, seconds: 0 }),
       note: "",
+      isInstallment: false,
       ...defaultData,
     },
   });
