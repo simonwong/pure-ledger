@@ -64,9 +64,8 @@ const BillSummary: React.FC<BillSummaryProps> = ({ ledgerId }) => {
         content={
           <AmountDisplay
             className="text-2xl font-bold"
-            type={balance > 0 ? BillType.EXPEND : BillType.INCOME}
+            type={balance > 0 ? BillType.INCOME : BillType.EXPEND}
             amount={Math.abs(balance)}
-            placeholder="-"
           />
           /* <p className="text-xs text-muted-foreground">
             +20.1% from last month
@@ -86,7 +85,6 @@ const BillSummary: React.FC<BillSummaryProps> = ({ ledgerId }) => {
             className="text-2xl font-bold"
             type={BillType.EXPEND}
             amount={expend}
-            placeholder="-"
           />
         }
       />
@@ -103,7 +101,6 @@ const BillSummary: React.FC<BillSummaryProps> = ({ ledgerId }) => {
             className="text-2xl font-bold"
             type={BillType.INCOME}
             amount={income}
-            placeholder="-"
           />
         }
       />
@@ -119,7 +116,6 @@ const BillSummary: React.FC<BillSummaryProps> = ({ ledgerId }) => {
                   className="text-xl font-bold"
                   type={BillType.EXPEND}
                   amount={resetExpend}
-                  placeholder="-"
                 />
               </div>
             ) : null}
@@ -130,7 +126,6 @@ const BillSummary: React.FC<BillSummaryProps> = ({ ledgerId }) => {
                   className="text-xl font-bold"
                   type={BillType.INCOME}
                   amount={resetIncome}
-                  placeholder="-"
                 />
               </div>
             ) : null}

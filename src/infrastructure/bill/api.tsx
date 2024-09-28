@@ -14,7 +14,16 @@ export const getBills = async (ledgerId: number) => {
     ledger_id: ledgerId,
   });
 
-  return dtoListToBills(res.sort((a, b) => compareDesc(a.date, b.date)));
+  // date > amount
+  return dtoListToBills(
+    res.sort((a, b) => {
+      const res = compareDesc(a.date, b.date);
+      if (res === 0) {
+        return b.amount - a.amount;
+      }
+      return res;
+    })
+  );
 };
 
 export const getBill = async (billId: number) => {

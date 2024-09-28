@@ -1,6 +1,5 @@
-import { useMemo, useState } from "react";
-import { Button, Switch, Tooltip } from "@easy-shadcn/react";
-import { CircleAlertIcon } from "lucide-react";
+import { useMemo } from "react";
+import { Button } from "@easy-shadcn/react";
 import { getBill } from "@/infrastructure/bill/api";
 import { Bill } from "@/domain/bill";
 import { SubBillFormModal } from "./actions";
@@ -8,43 +7,19 @@ import SubBillItem from "../BillPage/SubBillItem";
 import BigNumber from "bignumber.js";
 
 interface MultipleBillProps {
+  isInstallment: boolean;
   isEdit: boolean;
   data?: Bill;
   defaultIsMultiple?: boolean;
+  beforeOpenToSaveParent: () => Promise<any>;
 }
 
 export const useMultipleBill = ({
+  isInstallment,
   isEdit,
   data,
-  defaultIsMultiple,
+  beforeOpenToSaveParent,
 }: MultipleBillProps) => {
-  const [isMultipleBills, setIsMultipleBills] = useState(
-    defaultIsMultiple || false
-  );
-  const MultipleBillSwitch = (
-    <div className="flex gap-2 items-center">
-      <Switch
-        checked={isMultipleBills}
-        onCheckedChange={setIsMultipleBills}
-        disabled={isEdit}
-        label={`分多笔的账单`}
-      />
-      <Tooltip
-        content={
-          <div className="bg-white text-black dark:bg-black dark:text-primary-foreground">
-            <div>
-              开启分多笔的账单后，当前账单的金额不会计入统计，而是子账单的金额为准。
-            </div>
-            <div>在下方添加子账单</div>
-          </div>
-        }
-        delayDuration={300}
-      >
-        <CircleAlertIcon className="w-4 h-4 cursor-pointer" />
-      </Tooltip>
-    </div>
-  );
-
   const resetAmount = useMemo(() => {
     if (data) {
       return BigNumber(data.amount).minus(data.actualAmount).toNumber();
@@ -53,7 +28,7 @@ export const useMultipleBill = ({
   }, [data?.amount, data?.actualAmount]);
 
   const SubBillListNode =
-    isEdit && isMultipleBills ? (
+    isEdit && isInstallment ? (
       <div className="border border-muted rounded-md my-4 p-4">
         <div className="space-y-2">
           {data?.subBills?.map((subBill) => (
@@ -63,16 +38,22 @@ export const useMultipleBill = ({
         {data && data.amount > data.actualAmount && (
           <div className="py-4 text-center">
             <Button
-              onClick={() => {
+              onClick={async () => {
                 if (data) {
-                  SubBillFormModal.open(
-                    {
-                      parentBillData: data,
-                    },
-                    {
-                      billName: data.name,
-                    }
-                  );
+                  await beforeOpenToSaveParent();
+                  await new Promise<void>((resolve) => {
+                    setTimeout(() => {
+                      SubBillFormModal.open(
+                        {
+                          parentBillData: data,
+                        },
+                        {
+                          billName: data.name,
+                        }
+                      );
+                      resolve();
+                    }, 300);
+                  });
                 }
               }}
               className="border-none"
@@ -86,7 +67,7 @@ export const useMultipleBill = ({
       </div>
     ) : null;
 
-  const isSubmitAndAddSubBill = !isEdit && isMultipleBills;
+  const isSubmitAndAddSubBill = !isEdit && isInstallment;
   const submitAndAddSubBill = async (billId: number | null) => {
     if (isSubmitAndAddSubBill && billId) {
       const billData = await getBill(billId);
@@ -104,10 +85,8 @@ export const useMultipleBill = ({
   };
 
   return {
-    MultipleBillSwitch,
     SubBillListNode,
     submitAndAddSubBill,
-    isMultipleBills,
     isSubmitAndAddSubBill,
   };
 };

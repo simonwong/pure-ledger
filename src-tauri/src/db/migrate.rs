@@ -35,6 +35,12 @@ pub fn get_migrate() -> Vec<tauri_plugin_sql::Migration> {
             );",
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 3,
+            description: "bill_table_add_is_installment",
+            sql: "ALTER TABLE bills ADD COLUMN is_installment INTEGER;",
+            kind: MigrationKind::Up,
+        },
     ];
     migrations
 }

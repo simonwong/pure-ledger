@@ -2,7 +2,7 @@ import { Bill } from "@/domain/bill";
 import React from "react";
 import { ImageList } from "../ImageList";
 import AmountDisplay from "./AmountDisplay";
-import { Button, DropdownMenu } from "@easy-shadcn/react";
+import { Button, DropdownMenu, modalAction } from "@easy-shadcn/react";
 import { SubBillFormModal } from "../BillForm/actions";
 import { useMutationDeleteBill } from "@/store/bill";
 import { EllipsisVerticalIcon } from "lucide-react";
@@ -51,7 +51,15 @@ const SubBillItem: React.FC<SubBillItemProps> = ({ subBill, parentBill }) => {
             {
               name: "删除",
               key: "delete",
-              onClick: () => deleteBill.mutateAsync(subBill),
+              onClick: () => {
+                modalAction.confirm({
+                  title: "是否确认删除",
+                  content: "删除后无法找回",
+                  onConfirm: () => {
+                    deleteBill.mutateAsync(subBill);
+                  },
+                });
+              },
             },
           ]}
           contentProps={{

@@ -17,10 +17,10 @@ const insertLedgers = async (data: [string, string]) => {
 };
 
 const insertBills = async (
-  data: [number, string, 1 | 2, number, string, string]
+  data: [number, string, 1 | 2, number, string, string, 0 | 1]
 ) => {
   await test_db.execute(
-    "INSERT into bills (ledger_id, name, type, amount, note, date) VALUES ($1, $2, $3, $4, $5, $6)",
+    "INSERT into bills (ledger_id, name, type, amount, note, date, is_installment) VALUES ($1, $2, $3, $4, $5, $6, $7)",
     data
   );
 };
@@ -53,6 +53,7 @@ const setBills = async (
       100,
       `收入${i + 1}备注`,
       format(new Date(), "yyyy-MM-dd HH:mm:ss"),
+      0,
     ]);
   }
   for (let i = 0; i < outCount; i++) {
@@ -63,6 +64,7 @@ const setBills = async (
       100,
       `支出${i + 1}备注`,
       format(new Date(), "yyyy-MM-dd HH:mm:ss"),
+      0,
     ]);
   }
 };

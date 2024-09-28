@@ -8,7 +8,7 @@ export const dtoToBill = (dto: BillTDO): Bill => {
     name: dto.name,
     type: dto.type,
     amount: dto.amount,
-    actualAmount: dto.amount,
+    actualAmount: dto.is_installment ? 0 : dto.amount,
     date: dto.date,
     note: dto.note,
     filePaths: dto.file_path ? dto.file_path.split(",") : undefined,
@@ -16,6 +16,7 @@ export const dtoToBill = (dto: BillTDO): Bill => {
     parentBillId: dto.parent_bill_id,
     createdAt: dto.created_at,
     updatedAt: dto.updated_at,
+    isInstallment: !!dto.is_installment,
   };
 };
 
@@ -59,6 +60,7 @@ export const createBillToInput = (data: CreateBill): CreateBillInput => {
     ledger_id: data.ledgerId,
     parent_bill_id: data.parentBillId,
     file_path: data.filePaths?.filter(Boolean).join(","),
+    is_installment: data.isInstallment ? 1 : 0,
   };
 };
 
@@ -73,5 +75,6 @@ export const updateBillToInput = (data: UpdateBill): UpdateBillInput => {
     ledger_id: data.ledgerId,
     parent_bill_id: data.parentBillId,
     file_path: data.filePaths?.filter(Boolean).join(","),
+    is_installment: data.isInstallment ? 1 : 0,
   };
 };
