@@ -1,10 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as LedgersService from "@/infrastructure/ledger/api";
+import { useGlobalStore } from "./global";
 
 export const useQueryLedgers = () => {
   return useQuery({
     queryKey: ["ledgers"],
-    queryFn: LedgersService.getLedgers,
+    queryFn: async () => {
+      const res = await LedgersService.getLedgers();
+      if (res && res.length) {
+        useGlobalStore.getState().initCurrentLedger(res[0].id);
+      }
+      return res;
+    },
   });
 };
 
