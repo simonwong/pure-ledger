@@ -1,26 +1,22 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { cn } from "@easy-shadcn/utils";
 import { Button, buttonVariants } from "@easy-shadcn/react";
 import { useLedgerFormModal } from "./LedgerForm";
-import { useQueryLedgers } from "@/store/ledger";
 import { useGlobalStore } from "@/store/global";
+import { Ledger } from "@/domain/ledger";
 
 interface LedgerMenuProps {
   className?: string;
+  ledgerList?: Ledger[];
 }
 
-const LedgerMenu: React.FC<LedgerMenuProps> = ({ className, ...props }) => {
+const LedgerMenu: React.FC<LedgerMenuProps> = ({
+  className,
+  ledgerList,
+  ...props
+}) => {
   const { currentLedgerId, switchSelect } = useGlobalStore();
   const [ledgerFormModalHost, ledgerFormModalAction] = useLedgerFormModal();
-  const ledgerData = useQueryLedgers();
-
-  const ledgerList = ledgerData.data;
-
-  useEffect(() => {
-    if (currentLedgerId == null && ledgerList && ledgerList.length > 0) {
-      switchSelect(ledgerList[0].id);
-    }
-  }, [currentLedgerId, ledgerList]);
 
   if (!ledgerList || ledgerList.length === 0) {
     return null;
