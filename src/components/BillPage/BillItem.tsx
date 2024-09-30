@@ -1,12 +1,18 @@
-import React from "react";
-import { ImageList } from "../ImageList";
+import React, { useState } from "react";
 import { Bill } from "@/domain/bill";
-import { Button, DropdownMenu, modalAction } from "@easy-shadcn/react";
+import {
+  Button,
+  DropdownMenu,
+  DropdownMenuProps,
+  modalAction,
+} from "@easy-shadcn/react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useMutationDeleteBill } from "@/store/bill";
 import { EllipsisVerticalIcon } from "lucide-react";
 import AmountDisplay from "./AmountDisplay";
-import { useBillFormModal } from "../BillForm/actions";
+import { SubBillFormModal, useBillFormModal } from "../BillForm/actions";
 import SubBillItem from "./SubBillItem";
+import { ImageList } from "../ImageList";
 
 interface BillItemProps {
   ledgerId: number;
@@ -15,15 +21,34 @@ interface BillItemProps {
 
 const BillItem: React.FC<BillItemProps> = ({ ledgerId, bill }) => {
   const deleteBill = useMutationDeleteBill();
-  const hasSubBill = !!bill.subBills?.length;
+  // 还款清
+  const isClean = bill.amount === bill.actualAmount;
+  // 是个分期账单且有子账单
+  const hasSubBill = !!bill.subBills?.length && bill.isInstallment;
+  // 还款完了就默认折叠
+  const [isFold, setIsFold] = useState(isClean ? true : false);
 
   const renderSubBillList = (list: Bill[], parentBill: Bill) => {
     return (
-      <div className="bg-gray-100 p-6 space-y-4">
-        {list.map((item) => (
-          <SubBillItem key={item.id} subBill={item} parentBill={parentBill} />
-        ))}
-      </div>
+      <AnimatePresence>
+        {hasSubBill && !isFold && (
+          <motion.div
+            layout
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="bg-gray-100 p-6 space-y-4"
+          >
+            {list.map((item) => (
+              <SubBillItem
+                key={item.id}
+                subBill={item}
+                parentBill={parentBill}
+              />
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     );
   };
   const billFormModal = useBillFormModal(
@@ -55,28 +80,56 @@ const BillItem: React.FC<BillItemProps> = ({ ledgerId, bill }) => {
         <div className="text-sm text-muted-foreground">{bill.date}</div>
         <div>
           <DropdownMenu
-            menu={[
-              {
-                name: "编辑",
-                key: "edit",
-                onClick: () => {
-                  billFormModal.open();
+            menu={
+              [
+                bill.isInstallment
+                  ? {
+                      groupName: "子账单操作",
+                      items: [
+                        {
+                          name: "添加子账单",
+                          key: "fold",
+                          disabled: isClean,
+                          onClick: () => {
+                            SubBillFormModal.open(
+                              { parentBillData: bill },
+                              { billName: bill.name }
+                            );
+                          },
+                        },
+                        {
+                          name: isFold ? "展开子账单" : "收起子账单",
+                          disabled: !hasSubBill,
+                          key: "fold",
+                          onClick: () => {
+                            setIsFold((f) => !f);
+                          },
+                        },
+                      ],
+                    }
+                  : undefined,
+                {
+                  name: "编辑",
+                  key: "edit",
+                  onClick: () => {
+                    billFormModal.open();
+                  },
                 },
-              },
-              {
-                name: "删除",
-                key: "delete",
-                onClick: () => {
-                  modalAction.confirm({
-                    title: "是否确认删除",
-                    content: "删除后无法找回",
-                    onConfirm: () => {
-                      deleteBill.mutateAsync(bill);
-                    },
-                  });
+                {
+                  name: "删除",
+                  key: "delete",
+                  onClick: () => {
+                    modalAction.confirm({
+                      title: "是否确认删除",
+                      content: "删除后无法找回",
+                      onConfirm: () => {
+                        deleteBill.mutateAsync(bill);
+                      },
+                    });
+                  },
                 },
-              },
-            ]}
+              ].filter(Boolean) as DropdownMenuProps["menu"]
+            }
             contentProps={{
               className: "w-9",
             }}
@@ -87,7 +140,7 @@ const BillItem: React.FC<BillItemProps> = ({ ledgerId, bill }) => {
           </DropdownMenu>
         </div>
       </div>
-      {hasSubBill && renderSubBillList(bill.subBills!, bill)}
+      {renderSubBillList(bill.subBills!, bill)}
     </div>
   );
 };
