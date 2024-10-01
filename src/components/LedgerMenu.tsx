@@ -23,7 +23,7 @@ const LedgerMenu: React.FC<LedgerMenuProps> = ({
   }
 
   return (
-    <div>
+    <div className="p-8 pr-0">
       <Button className="mb-4" onClick={() => ledgerFormModalAction.open()}>
         新建一个账本
       </Button>
