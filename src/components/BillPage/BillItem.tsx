@@ -85,10 +85,11 @@ const BillItem: React.FC<BillItemProps> = ({ ledgerId, bill }) => {
                 bill.isInstallment
                   ? {
                       groupName: "子账单操作",
+                      key: "subActions",
                       items: [
                         {
                           name: "添加子账单",
-                          key: "fold",
+                          key: "addSub",
                           disabled: isClean,
                           onClick: () => {
                             SubBillFormModal.open(

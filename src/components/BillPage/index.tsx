@@ -15,7 +15,7 @@ const BillPage: React.FC<BillPageProps> = () => {
 
   if (isLoading) {
     return (
-      <div className="h-full flex justify-center items-center">
+      <div className="h-screen flex justify-center items-center">
         <Loader2Icon className="animate-spin" />
       </div>
     );
@@ -23,14 +23,14 @@ const BillPage: React.FC<BillPageProps> = () => {
 
   if (!currentLedgerId || ledger == null) {
     return (
-      <div className="h-full flex justify-center items-center">
+      <div className="h-screen flex justify-center items-center">
         <EmptyPage />
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 h-screen overflow-auto p-8">
       <BillHeader ledger={ledger} />
       <BillSummary ledgerId={currentLedgerId} />
       <BillList ledgerId={currentLedgerId} />

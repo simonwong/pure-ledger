@@ -19,11 +19,11 @@ function App() {
 
   return (
     <>
-      <div className="flex">
-        <div className="p-8">
+      <div className="flex max-h-screen">
+        <div>
           <LedgerMenu ledgerList={ledgerList} />
         </div>
-        <div className="flex-1 p-8">
+        <div className="flex-1">
           <BillPage />
         </div>
       </div>
