@@ -64,9 +64,7 @@ const BillList: React.FC<BillListProps> = ({ ledgerId }) => {
         contentProps={{
           className: "p-0",
         }}
-        content={
-          <div className="space-y-2 min-w-96">{renderBillList(billList)}</div>
-        }
+        content={<div className="min-w-96">{renderBillList(billList)}</div>}
       />
     </div>
   );

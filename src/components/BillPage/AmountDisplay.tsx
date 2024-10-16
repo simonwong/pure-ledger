@@ -1,4 +1,5 @@
 import { BillType } from "@/domain/bill";
+import { amountShow } from "@/lib/math";
 import React from "react";
 
 interface AmountDisplayProps {
@@ -18,9 +19,10 @@ const AmountDisplay: React.FC<AmountDisplayProps> = ({
     return <span className={className}>{placeholder || "0"}</span>;
   }
 
+  const amountFormat = amountShow(amount);
   return (
     <span className={className}>
-      {type === BillType.EXPEND ? `-${amount}` : amount}
+      {type === BillType.EXPEND ? `-${amountFormat}` : amountFormat}
     </span>
   );
 };

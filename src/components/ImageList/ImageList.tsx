@@ -1,14 +1,16 @@
-import React, { useEffect } from "react";
-import { XIcon } from "lucide-react";
-import { getStorageFilePath } from "@/lib/storageFile";
-import ImagePreview from "./ImagePreview";
-import { convertFileSrc } from "@tauri-apps/api/core";
-import { UploadFileData } from "../FileUploader/type";
+import React, { useEffect } from 'react';
+import { XIcon } from 'lucide-react';
+import { getStorageFilePath } from '@/lib/storageFile';
+import ImagePreview from './ImagePreview';
+import { convertFileSrc } from '@tauri-apps/api/core';
+import { UploadFileData } from '../FileUploader/type';
+import { cn } from '@easy-shadcn/utils';
 
 interface ImageListProps {
   data?: (string | UploadFileData)[];
   showRemove?: boolean;
   onRemove?: (idx: number) => void;
+  size?: 'default' | 'sm';
 }
 
 const getUrlStringList = async (files?: (string | UploadFileData)[]) => {
@@ -19,7 +21,7 @@ const getUrlStringList = async (files?: (string | UploadFileData)[]) => {
   let res: string[] = [];
 
   for await (const item of files) {
-    if (typeof item === "string") {
+    if (typeof item === 'string') {
       const path = await getStorageFilePath(item);
       res.push(path);
     } else {
@@ -30,11 +32,7 @@ const getUrlStringList = async (files?: (string | UploadFileData)[]) => {
   return res;
 };
 
-const ImageList: React.FC<ImageListProps> = ({
-  data,
-  showRemove,
-  onRemove,
-}) => {
+const ImageList: React.FC<ImageListProps> = ({ data, showRemove, onRemove, size }) => {
   const [urlStringList, setUrlStringList] = React.useState<string[]>([]);
 
   useEffect(() => {
@@ -46,13 +44,19 @@ const ImageList: React.FC<ImageListProps> = ({
   if (!urlStringList || urlStringList.length == 0) {
     return null;
   }
+
+  const sizeMap = {
+    default: 'w-12 h-12',
+    sm: 'w-10 h-10',
+  };
+
   return (
     <div className="flex gap-2 flex-wrap">
       {urlStringList.map((url, idx) => (
         <div key={idx} className="relative group">
           <ImagePreview urls={urlStringList} currentIdx={idx}>
             <img
-              className="w-12 h-12 object-cover rounded-sm cursor-pointer"
+              className={cn(sizeMap[size || 'default'], 'object-cover rounded-sm cursor-pointer')}
               src={url}
               alt=""
             />
