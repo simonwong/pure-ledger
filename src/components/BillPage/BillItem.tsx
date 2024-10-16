@@ -1,18 +1,15 @@
-import React, { useState } from "react";
-import { Bill } from "@/domain/bill";
-import {
-  Button,
-  DropdownMenu,
-  DropdownMenuProps,
-  modalAction,
-} from "@easy-shadcn/react";
-import { AnimatePresence, motion } from "framer-motion";
-import { useMutationDeleteBill } from "@/store/bill";
-import { EllipsisVerticalIcon } from "lucide-react";
-import AmountDisplay from "./AmountDisplay";
-import { SubBillFormModal, useBillFormModal } from "../BillForm/actions";
-import SubBillItem from "./SubBillItem";
-import { ImageList } from "../ImageList";
+import React, { useState } from 'react';
+import { Bill } from '@/domain/bill';
+import { Button, DropdownMenu, DropdownMenuProps, modalAction } from '@easy-shadcn/react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useMutationDeleteBill } from '@/store/bill';
+import { EllipsisVerticalIcon } from 'lucide-react';
+import AmountDisplay from './AmountDisplay';
+import { SubBillFormModal, useBillFormModal } from '../BillForm/actions';
+import SubBillItem from './SubBillItem';
+import { ImageList } from '../ImageList';
+import { amountShow } from '@/lib/math';
+import { dateShow } from '@/lib/date';
 
 interface BillItemProps {
   ledgerId: number;
@@ -37,14 +34,10 @@ const BillItem: React.FC<BillItemProps> = ({ ledgerId, bill }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="bg-gray-100 p-6 space-y-4"
+            className="bg-gray-100 pl-4"
           >
             {list.map((item) => (
-              <SubBillItem
-                key={item.id}
-                subBill={item}
-                parentBill={parentBill}
-              />
+              <SubBillItem key={item.id} subBill={item} parentBill={parentBill} />
             ))}
           </motion.div>
         )}
@@ -61,12 +54,12 @@ const BillItem: React.FC<BillItemProps> = ({ ledgerId, bill }) => {
 
   return (
     <div>
-      <div className="flex items-center space-x-12 p-6">
+      <div className="flex items-center space-x-8 px-6 py-2">
         <div className="flex-1 space-y-1">
           <p className="text-sm font-medium leading-none">{bill.name}</p>
           <p className="text-sm text-muted-foreground">{bill.note}</p>
         </div>
-        <div>{<ImageList data={bill.filePaths} />}</div>
+        <div>{<ImageList size="sm" data={bill.filePaths} />}</div>
         <div className="ml-auto">
           <AmountDisplay
             className="font-medium"
@@ -74,22 +67,22 @@ const BillItem: React.FC<BillItemProps> = ({ ledgerId, bill }) => {
             amount={bill.isInstallment ? bill.actualAmount : bill.amount}
           />
           {bill.isInstallment && (
-            <span className="text-muted-foreground"> ({bill.amount})</span>
+            <span className="text-muted-foreground"> ({amountShow(bill.amount)})</span>
           )}
         </div>
-        <div className="text-sm text-muted-foreground">{bill.date}</div>
+        <div className="text-sm text-muted-foreground">{dateShow(bill.date)}</div>
         <div>
           <DropdownMenu
             menu={
               [
                 bill.isInstallment
                   ? {
-                      groupName: "子账单操作",
-                      key: "subActions",
+                      groupName: '子账单操作',
+                      key: 'subActions',
                       items: [
                         {
-                          name: "添加子账单",
-                          key: "addSub",
+                          name: '添加子账单',
+                          key: 'addSub',
                           disabled: isClean,
                           onClick: () => {
                             SubBillFormModal.open(
@@ -99,9 +92,9 @@ const BillItem: React.FC<BillItemProps> = ({ ledgerId, bill }) => {
                           },
                         },
                         {
-                          name: isFold ? "展开子账单" : "收起子账单",
+                          name: isFold ? '展开子账单' : '收起子账单',
                           disabled: !hasSubBill,
-                          key: "fold",
+                          key: 'fold',
                           onClick: () => {
                             setIsFold((f) => !f);
                           },
@@ -110,29 +103,29 @@ const BillItem: React.FC<BillItemProps> = ({ ledgerId, bill }) => {
                     }
                   : undefined,
                 {
-                  name: "编辑",
-                  key: "edit",
+                  name: '编辑',
+                  key: 'edit',
                   onClick: () => {
                     billFormModal.open();
                   },
                 },
                 {
-                  name: "删除",
-                  key: "delete",
+                  name: '删除',
+                  key: 'delete',
                   onClick: () => {
                     modalAction.confirm({
-                      title: "是否确认删除",
-                      content: "删除后无法找回",
+                      title: '是否确认删除',
+                      content: '删除后无法找回',
                       onConfirm: () => {
                         deleteBill.mutateAsync(bill);
                       },
                     });
                   },
                 },
-              ].filter(Boolean) as DropdownMenuProps["menu"]
+              ].filter(Boolean) as DropdownMenuProps['menu']
             }
             contentProps={{
-              className: "w-9",
+              className: 'w-9',
             }}
           >
             <Button variant="outline" size="icon">
