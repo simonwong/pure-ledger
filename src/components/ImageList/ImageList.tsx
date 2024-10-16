@@ -2,16 +2,16 @@ import React, { useEffect } from "react";
 import { XIcon } from "lucide-react";
 import { getStorageFilePath } from "@/lib/storageFile";
 import ImagePreview from "./ImagePreview";
-import { FileResponse } from "@tauri-apps/plugin-dialog";
 import { convertFileSrc } from "@tauri-apps/api/core";
+import { UploadFileData } from "../FileUploader/type";
 
 interface ImageListProps {
-  data?: (string | FileResponse)[];
+  data?: (string | UploadFileData)[];
   showRemove?: boolean;
   onRemove?: (idx: number) => void;
 }
 
-const getUrlStringList = async (files?: (string | FileResponse)[]) => {
+const getUrlStringList = async (files?: (string | UploadFileData)[]) => {
   if (!files || files.length === 0) {
     return [];
   }
