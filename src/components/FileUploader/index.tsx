@@ -1,12 +1,13 @@
 import React, { useImperativeHandle, useState } from "react";
 import { Button } from "@easy-shadcn/react";
 import { UploadIcon } from "lucide-react";
-import { FileResponse, open } from "@tauri-apps/plugin-dialog";
+import { open } from "@tauri-apps/plugin-dialog";
 import { ImageList } from "@/components/ImageList";
 import { copyFileByLedgerId, removeStorageFile } from "@/lib/storageFile";
+import { UploadFileData } from "./type";
 
-// FileResponse 表示被上传的本地文件，string 表示已经存到app中的文件路径
-type FileType = FileResponse | string;
+// UploadFileData 表示被上传的本地文件，string 表示已经存到app中的文件路径
+type FileType = UploadFileData | string;
 
 interface FileUploaderProps {
   ledgerId: number;
@@ -65,7 +66,11 @@ const FileUploader = React.forwardRef<FileUploaderAction, FileUploaderProps>(
         ],
       });
       if (files) {
-        onChange?.([...(value || []), ...files]);
+        const innerFiles = files.map((url) => ({
+          inner: true,
+          path: url,
+        }));
+        onChange?.([...(value || []), ...innerFiles]);
       }
     };
 
