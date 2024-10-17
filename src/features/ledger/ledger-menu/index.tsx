@@ -1,20 +1,16 @@
-import React from "react";
-import { cn } from "@easy-shadcn/utils";
-import { Button, buttonVariants } from "@easy-shadcn/react";
-import { useLedgerFormModal } from "./LedgerForm";
-import { useGlobalStore } from "@/store/global";
-import { Ledger } from "@/domain/ledger";
+import React from 'react';
+import { cn } from '@easy-shadcn/utils';
+import { Button, buttonVariants } from '@easy-shadcn/react';
+import { useLedgerFormModal } from '@/features/ledger/ledger-form';
+import { useGlobalStore } from '@/store/global';
+import { Ledger } from '@/domain/ledger';
 
 interface LedgerMenuProps {
   className?: string;
   ledgerList?: Ledger[];
 }
 
-const LedgerMenu: React.FC<LedgerMenuProps> = ({
-  className,
-  ledgerList,
-  ...props
-}) => {
+const LedgerMenu: React.FC<LedgerMenuProps> = ({ className, ledgerList, ...props }) => {
   const { currentLedgerId, switchSelect } = useGlobalStore();
   const [ledgerFormModalHost, ledgerFormModalAction] = useLedgerFormModal();
 
@@ -27,7 +23,7 @@ const LedgerMenu: React.FC<LedgerMenuProps> = ({
       <Button className="mb-4" onClick={() => ledgerFormModalAction.open()}>
         新建一个账本
       </Button>
-      <nav className={cn("flex-col", className)} {...props}>
+      <nav className={cn('flex-col', className)} {...props}>
         {ledgerList.map((item) => (
           <div
             key={item.id}
@@ -35,11 +31,9 @@ const LedgerMenu: React.FC<LedgerMenuProps> = ({
               switchSelect(item.id);
             }}
             className={cn(
-              buttonVariants({ variant: "ghost" }),
-              item.id === currentLedgerId
-                ? "bg-muted hover:bg-muted"
-                : "hover:bg-transparent",
-              "justify-start cursor-pointer block whitespace-pre text-wrap h-auto max-w-[200px]"
+              buttonVariants({ variant: 'ghost' }),
+              item.id === currentLedgerId ? 'bg-muted hover:bg-muted' : 'hover:bg-transparent',
+              'justify-start cursor-pointer block whitespace-pre text-wrap h-auto max-w-[200px]'
             )}
           >
             {item.name}

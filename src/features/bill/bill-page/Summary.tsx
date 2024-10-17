@@ -1,10 +1,10 @@
-import { useMemo } from "react";
-import BigNumber from "bignumber.js";
-import { DollarSign, HandCoins, WalletCards } from "lucide-react";
-import { Card } from "@easy-shadcn/react";
-import { BillType } from "@/domain/bill";
-import { useQueryBills } from "@/store/bill";
-import AmountDisplay from "./AmountDisplay";
+import { useMemo } from 'react';
+import BigNumber from 'bignumber.js';
+import { DollarSign, HandCoins, WalletCards } from 'lucide-react';
+import { Card } from '@easy-shadcn/react';
+import { BillType } from '@/domain/bill';
+import { useQueryBills } from '@/store/bill';
+import AmountDisplay from './AmountDisplay';
 
 interface BillSummaryProps {
   ledgerId: number;
@@ -81,11 +81,7 @@ const BillSummary: React.FC<BillSummaryProps> = ({ ledgerId }) => {
           </div>
         }
         content={
-          <AmountDisplay
-            className="text-2xl font-bold"
-            type={BillType.EXPEND}
-            amount={expend}
-          />
+          <AmountDisplay className="text-2xl font-bold" type={BillType.EXPEND} amount={expend} />
         }
       />
       <Card
@@ -97,11 +93,7 @@ const BillSummary: React.FC<BillSummaryProps> = ({ ledgerId }) => {
           </div>
         }
         content={
-          <AmountDisplay
-            className="text-2xl font-bold"
-            type={BillType.INCOME}
-            amount={income}
-          />
+          <AmountDisplay className="text-2xl font-bold" type={BillType.INCOME} amount={income} />
         }
       />
       <Card

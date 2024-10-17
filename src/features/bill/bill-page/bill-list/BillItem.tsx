@@ -4,10 +4,10 @@ import { Button, DropdownMenu, DropdownMenuProps, modalAction } from '@easy-shad
 import { AnimatePresence, motion } from 'framer-motion';
 import { useMutationDeleteBill } from '@/store/bill';
 import { EllipsisVerticalIcon } from 'lucide-react';
-import AmountDisplay from './AmountDisplay';
-import { SubBillFormModal, useBillFormModal } from '../BillForm/actions';
+import AmountDisplay from '../AmountDisplay';
+import { SubBillFormModal, useBillFormModal } from '../bill-form/actions';
 import SubBillItem from './SubBillItem';
-import { ImageList } from '../ImageList';
+import { ImageList } from '@/components/ImageList';
 import { amountShow } from '@/lib/math';
 import { dateShow } from '@/lib/date';
 

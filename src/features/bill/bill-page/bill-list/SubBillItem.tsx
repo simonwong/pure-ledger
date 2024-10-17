@@ -1,9 +1,9 @@
 import { Bill } from '@/domain/bill';
 import React from 'react';
-import { ImageList } from '../ImageList';
-import AmountDisplay from './AmountDisplay';
+import { ImageList } from '@/components/ImageList';
+import AmountDisplay from '../AmountDisplay';
 import { Button, DropdownMenu, modalAction } from '@easy-shadcn/react';
-import { SubBillFormModal } from '../BillForm/actions';
+import { SubBillFormModal } from '../bill-form/actions';
 import { useMutationDeleteBill } from '@/store/bill';
 import { EllipsisVerticalIcon } from 'lucide-react';
 import { dateShow } from '@/lib/date';

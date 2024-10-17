@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Button,
   DatePicker,
@@ -8,16 +8,16 @@ import {
   Switch,
   toast,
   Tooltip,
-} from "@easy-shadcn/react";
-import { useMutationCreateBill, useMutationUpdateBill } from "@/store/bill";
-import { BillType } from "@/domain/bill";
-import { format } from "date-fns";
-import SwitchType from "./SwitchType";
-import FileUploader, { FileUploaderAction } from "../FileUploader";
-import { Bill } from "@/domain/bill";
-import { BillFormData, useBillForm } from "./form";
-import { useMultipleBill } from "./useMultipleBill";
-import { CircleAlertIcon } from "lucide-react";
+} from '@easy-shadcn/react';
+import { useMutationCreateBill, useMutationUpdateBill } from '@/store/bill';
+import { BillType } from '@/domain/bill';
+import { format } from 'date-fns';
+import SwitchType from './SwitchType';
+import FileUploader, { FileUploaderAction } from '@/components/FileUploader';
+import { Bill } from '@/domain/bill';
+import { BillFormData, useBillForm } from './form';
+import { useMultipleBill } from './useMultipleBill';
+import { CircleAlertIcon } from 'lucide-react';
 
 export interface BillFormProps {
   ledgerId: number;
@@ -28,29 +28,22 @@ export interface BillFormProps {
   onFinish?: () => void;
 }
 
-export const BillForm: React.FC<BillFormProps> = ({
-  ledgerId,
-  data,
-  defaultData,
-  onFinish,
-}) => {
+export const BillForm: React.FC<BillFormProps> = ({ ledgerId, data, defaultData, onFinish }) => {
   const createBill = useMutationCreateBill();
   const updateBill = useMutationUpdateBill();
   const [currentData, setCurrentData] = useState(data);
   const [form] = useBillForm(defaultData);
-  const type = form.watch("type");
-  const isInstallment = form.watch("isInstallment");
+  const type = form.watch('type');
+  const isInstallment = form.watch('isInstallment');
   const isEdit = !!currentData;
   const fileUploadRef = useRef<FileUploaderAction>(null);
-  const { submitAndAddSubBill, isSubmitAndAddSubBill, SubBillListNode } =
-    useMultipleBill({
-      isInstallment,
-      isEdit,
-      data: currentData,
-      defaultIsMultiple: !!currentData?.subBills?.length,
-      beforeOpenToSaveParent: () =>
-        form.handleSubmit((d) => handleSubmit(d, false, true))(),
-    });
+  const { submitAndAddSubBill, isSubmitAndAddSubBill, SubBillListNode } = useMultipleBill({
+    isInstallment,
+    isEdit,
+    data: currentData,
+    defaultIsMultiple: !!currentData?.subBills?.length,
+    beforeOpenToSaveParent: () => form.handleSubmit((d) => handleSubmit(d, false, true))(),
+  });
 
   useEffect(() => {
     if (data) {
@@ -68,13 +61,11 @@ export const BillForm: React.FC<BillFormProps> = ({
     nextAddSub?: boolean,
     isOnlySave?: boolean
   ) => {
-    const filePaths = fileUploadRef.current
-      ? await fileUploadRef.current.fileChanged()
-      : undefined;
+    const filePaths = fileUploadRef.current ? await fileUploadRef.current.fileChanged() : undefined;
 
     const submitData = {
       ...formData,
-      date: format(formData.date, "yyyy-MM-dd HH:mm:ss"),
+      date: format(formData.date, 'yyyy-MM-dd HH:mm:ss'),
       filePaths,
     };
 
@@ -98,7 +89,7 @@ export const BillForm: React.FC<BillFormProps> = ({
     onFinish?.();
   };
 
-  const typeText = type === BillType.EXPEND ? "支出" : "收入";
+  const typeText = type === BillType.EXPEND ? '支出' : '收入';
 
   return (
     <Form form={form} onSubmit={(e) => e.preventDefault()}>
@@ -109,7 +100,7 @@ export const BillForm: React.FC<BillFormProps> = ({
               disabled={isEdit}
               value={type}
               onChange={(val) => {
-                form.setValue("type", val);
+                form.setValue('type', val);
               }}
             />
           </div>
@@ -135,7 +126,7 @@ export const BillForm: React.FC<BillFormProps> = ({
                       } else {
                         // TODO: actualAmount set
                         if (currentData?.subBills?.length) {
-                          toast.info("当前存在子账单，请删除后再切换");
+                          toast.info('当前存在子账单，请删除后再切换');
                         } else {
                           field.onChange(val);
                         }
@@ -168,9 +159,7 @@ export const BillForm: React.FC<BillFormProps> = ({
               control={form.control}
               name="name"
               label="账单名称"
-              render={({ field }) => (
-                <Input placeholder="请输入账单名称" {...field} />
-              )}
+              render={({ field }) => <Input placeholder="请输入账单名称" {...field} />}
             />
             <FormItem
               control={form.control}
@@ -183,7 +172,7 @@ export const BillForm: React.FC<BillFormProps> = ({
                   {...field}
                   onChange={(event) => {
                     const val = event.target.value;
-                    if (val === "") {
+                    if (val === '') {
                       field.onChange(undefined);
                     } else {
                       field.onChange(+val);
@@ -214,9 +203,7 @@ export const BillForm: React.FC<BillFormProps> = ({
               control={form.control}
               name="note"
               label="备注"
-              render={({ field }) => (
-                <Input placeholder="请输入备注" {...field} />
-              )}
+              render={({ field }) => <Input placeholder="请输入备注" {...field} />}
             />
             <FormItem
               control={form.control}
@@ -237,7 +224,7 @@ export const BillForm: React.FC<BillFormProps> = ({
       {SubBillListNode}
       <div className="flex justify-end space-x-2">
         <Button
-          variant={isSubmitAndAddSubBill ? "secondary" : "default"}
+          variant={isSubmitAndAddSubBill ? 'secondary' : 'default'}
           onClick={form.handleSubmit((d) => handleSubmit(d))}
         >
           保存

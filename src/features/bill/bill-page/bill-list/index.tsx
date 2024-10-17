@@ -1,11 +1,11 @@
-import * as React from "react";
-import { Card } from "@easy-shadcn/react";
-import { Bill, BillType } from "@/domain/bill";
-import { Button } from "@easy-shadcn/react";
-import { DollarSignIcon, HandCoinsIcon } from "lucide-react";
-import { useQueryBills } from "@/store/bill";
-import BillItem from "./BillItem";
-import { BillFormModal } from "../BillForm/actions";
+import * as React from 'react';
+import { Card } from '@easy-shadcn/react';
+import { Bill, BillType } from '@/domain/bill';
+import { Button } from '@easy-shadcn/react';
+import { DollarSignIcon, HandCoinsIcon } from 'lucide-react';
+import { useQueryBills } from '@/store/bill';
+import BillItem from './BillItem';
+import { BillFormModal } from '../bill-form/actions';
 
 interface BillListProps {
   ledgerId: number;
@@ -14,9 +14,7 @@ interface BillListProps {
 const BillList: React.FC<BillListProps> = ({ ledgerId }) => {
   const { data: billList = [] } = useQueryBills(ledgerId);
   const renderBillList = (list: Bill[]) => {
-    return list.map((item) => (
-      <BillItem key={item.id} bill={item} ledgerId={ledgerId} />
-    ));
+    return list.map((item) => <BillItem key={item.id} bill={item} ledgerId={ledgerId} />);
   };
 
   return (
@@ -62,7 +60,7 @@ const BillList: React.FC<BillListProps> = ({ ledgerId }) => {
         }
         description={`总共 ${billList.length} 条账单`}
         contentProps={{
-          className: "p-0",
+          className: 'p-0',
         }}
         content={<div className="min-w-96">{renderBillList(billList)}</div>}
       />
