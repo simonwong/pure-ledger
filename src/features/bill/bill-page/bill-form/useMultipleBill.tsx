@@ -1,10 +1,10 @@
-import { useMemo } from "react";
-import { Button } from "@easy-shadcn/react";
-import { getBill } from "@/infrastructure/bill/api";
-import { Bill } from "@/domain/bill";
-import { SubBillFormModal } from "./actions";
-import SubBillItem from "../BillPage/SubBillItem";
-import BigNumber from "bignumber.js";
+import { useMemo } from 'react';
+import { Button } from '@easy-shadcn/react';
+import { getBill } from '@/infrastructure/bill/api';
+import { Bill } from '@/domain/bill';
+import { SubBillFormModal } from './actions';
+import SubBillItem from '../bill-list/SubBillItem';
+import BigNumber from 'bignumber.js';
 
 interface MultipleBillProps {
   isInstallment: boolean;

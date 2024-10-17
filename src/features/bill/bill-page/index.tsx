@@ -1,11 +1,11 @@
-import * as React from "react";
-import BillSummary from "./Summary";
-import BillHeader from "./Header";
-import BillList from "./BillList";
-import EmptyPage from "@/components/EmptyPage";
-import { useGlobalStore } from "@/store/global";
-import { useQueryLedger } from "@/store/ledger";
-import { Loader2Icon } from "lucide-react";
+import * as React from 'react';
+import BillSummary from './Summary';
+import BillHeader from './Header';
+import BillList from './bill-list';
+import EmptyPage from '@/features/empty/empty-page';
+import { useGlobalStore } from '@/store/global';
+import { useQueryLedger } from '@/store/ledger';
+import { Loader2Icon } from 'lucide-react';
 
 interface BillPageProps {}
 

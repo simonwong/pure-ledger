@@ -1,21 +1,18 @@
-import { useEffect } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Button } from "@easy-shadcn/react";
-import { Form, FormItem, Input } from "@easy-shadcn/react";
-import {
-  useMutationCreateLedger,
-  useMutationUpdateLedger,
-} from "@/store/ledger";
-import { Ledger } from "@/domain/ledger";
+import { useEffect } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Button } from '@easy-shadcn/react';
+import { Form, FormItem, Input } from '@easy-shadcn/react';
+import { useMutationCreateLedger, useMutationUpdateLedger } from '@/store/ledger';
+import { Ledger } from '@/domain/ledger';
 
 const FormSchema = z.object({
   name: z
     .string({
-      required_error: "请输入账本名称",
+      required_error: '请输入账本名称',
     })
     .trim()
-    .min(1, "至少输入1个字"),
+    .min(1, '至少输入1个字'),
   note: z.optional(z.string()),
 });
 
@@ -30,8 +27,8 @@ export const LedgerForm: React.FC<LedgerFormProps> = ({ data, onFinish }) => {
   const form = Form.useForm<FormData>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      name: "",
-      note: "",
+      name: '',
+      note: '',
     },
   });
 
@@ -73,9 +70,7 @@ export const LedgerForm: React.FC<LedgerFormProps> = ({ data, onFinish }) => {
           name="name"
           label="账本名称"
           description="这是你展示的账本名称"
-          render={({ field }) => (
-            <Input placeholder="请输入账本名称" {...field} />
-          )}
+          render={({ field }) => <Input placeholder="请输入账本名称" {...field} />}
         />
         <FormItem
           control={form.control}

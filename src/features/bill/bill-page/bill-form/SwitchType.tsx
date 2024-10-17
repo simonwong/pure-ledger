@@ -1,7 +1,7 @@
-import * as React from "react";
-import { BillType } from "@/domain/bill";
-import { DollarSign, HandCoins } from "lucide-react";
-import { Toggle } from "@easy-shadcn/react";
+import * as React from 'react';
+import { BillType } from '@/domain/bill';
+import { DollarSign, HandCoins } from 'lucide-react';
+import { Toggle } from '@easy-shadcn/react';
 
 interface SwitchTypeProps {
   disabled?: boolean;
@@ -9,11 +9,7 @@ interface SwitchTypeProps {
   onChange: (val: BillType) => void;
 }
 
-const SwitchType: React.FC<SwitchTypeProps> = ({
-  disabled,
-  value,
-  onChange,
-}) => {
+const SwitchType: React.FC<SwitchTypeProps> = ({ disabled, value, onChange }) => {
   const handleChange = (val: string) => {
     onChange(Number(val));
   };
@@ -31,7 +27,7 @@ const SwitchType: React.FC<SwitchTypeProps> = ({
       options={[
         {
           value: String(BillType.EXPEND),
-          className: "cursor-pointer",
+          className: 'cursor-pointer',
           label: (
             <>
               <HandCoins className="mr-2 h-4 w-4" /> 支出
@@ -40,7 +36,7 @@ const SwitchType: React.FC<SwitchTypeProps> = ({
         },
         {
           value: String(BillType.INCOME),
-          className: "cursor-pointer",
+          className: 'cursor-pointer',
           label: (
             <>
               <DollarSign className="mr-2 h-4 w-4" /> 收入

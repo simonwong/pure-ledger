@@ -1,31 +1,31 @@
-import React, { useEffect, useState, useRef } from "react";
-import { z } from "zod";
-import { Button, DatePicker, Form, FormItem, Input } from "@easy-shadcn/react";
-import { useMutationCreateBill, useMutationUpdateBill } from "@/store/bill";
-import { BillType } from "@/domain/bill";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
-import FileUploader, { FileUploaderAction } from "../FileUploader";
-import { Bill } from "@/domain/bill";
-import BigNumber from "bignumber.js";
-import { set } from "date-fns";
+import React, { useEffect, useState, useRef } from 'react';
+import { z } from 'zod';
+import { Button, DatePicker, Form, FormItem, Input } from '@easy-shadcn/react';
+import { useMutationCreateBill, useMutationUpdateBill } from '@/store/bill';
+import { BillType } from '@/domain/bill';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { format } from 'date-fns';
+import FileUploader, { FileUploaderAction } from '@/components/FileUploader';
+import { Bill } from '@/domain/bill';
+import BigNumber from 'bignumber.js';
+import { set } from 'date-fns';
 
 const createDynamicFormSchema = (maxAmount: number, maxTip: string) => {
   return z.object({
     name: z
       .string({
-        required_error: "请输入账单名称",
+        required_error: '请输入账单名称',
       })
       .trim()
-      .min(1, "至少输入1个字"),
+      .min(1, '至少输入1个字'),
     amount: z
       .number({
-        required_error: "请输入金额",
-        invalid_type_error: "请输入有效的金额",
+        required_error: '请输入金额',
+        invalid_type_error: '请输入有效的金额',
       })
-      .min(0, "最小金额填0")
+      .min(0, '最小金额填0')
       .max(maxAmount, maxTip)
-      .safe("超出金额限制"),
+      .safe('超出金额限制'),
     type: z.nativeEnum(BillType),
     isInstallment: z.boolean(),
     date: z.date(),
@@ -42,20 +42,14 @@ export type SubBillFormProps = {
   data?: Bill;
 };
 
-export const SubBillForm: React.FC<SubBillFormProps> = ({
-  parentBillData,
-  data,
-  onFinish,
-}) => {
+export const SubBillForm: React.FC<SubBillFormProps> = ({ parentBillData, data, onFinish }) => {
   const [loading, setLoading] = useState(false);
   const createBill = useMutationCreateBill();
   const updateBill = useMutationUpdateBill();
 
   const form = Form.useForm<FormData>({
     resolver: (...props) => {
-      const resetAmount = BigNumber(parentBillData?.amount).minus(
-        parentBillData?.actualAmount
-      );
+      const resetAmount = BigNumber(parentBillData?.amount).minus(parentBillData?.actualAmount);
       let maxAmount = Number.MAX_SAFE_INTEGER;
       if (data) {
         maxAmount = resetAmount.plus(data.amount).toNumber();
@@ -70,15 +64,15 @@ export const SubBillForm: React.FC<SubBillFormProps> = ({
       )(...props);
     },
     defaultValues: {
-      name: "",
+      name: '',
       amount: 0,
       type: parentBillData?.type,
       date: set(new Date(), { hours: 0, minutes: 0, seconds: 0 }),
       isInstallment: false,
-      note: "",
+      note: '',
     },
   });
-  const type = form.watch("type");
+  const type = form.watch('type');
   const isEdit = !!data;
 
   const fileUploadRef = useRef<FileUploaderAction>(null);
@@ -94,13 +88,11 @@ export const SubBillForm: React.FC<SubBillFormProps> = ({
   }, []);
 
   const handleSubmit = async (formData: FormData) => {
-    const filePaths = fileUploadRef.current
-      ? await fileUploadRef.current.fileChanged()
-      : undefined;
+    const filePaths = fileUploadRef.current ? await fileUploadRef.current.fileChanged() : undefined;
 
     const submitData = {
       ...formData,
-      date: format(formData.date, "yyyy-MM-dd HH:mm:ss"),
+      date: format(formData.date, 'yyyy-MM-dd HH:mm:ss'),
       filePaths,
     };
 
@@ -129,7 +121,7 @@ export const SubBillForm: React.FC<SubBillFormProps> = ({
     }
   };
 
-  const typeText = type === BillType.EXPEND ? "支出" : "收入";
+  const typeText = type === BillType.EXPEND ? '支出' : '收入';
 
   return (
     <Form form={form} onSubmit={form.handleSubmit(handleConfirm)}>
@@ -144,9 +136,7 @@ export const SubBillForm: React.FC<SubBillFormProps> = ({
               control={form.control}
               name="name"
               label="账单名称"
-              render={({ field }) => (
-                <Input placeholder="请输入账单名称" {...field} />
-              )}
+              render={({ field }) => <Input placeholder="请输入账单名称" {...field} />}
             />
             <FormItem
               control={form.control}
@@ -159,7 +149,7 @@ export const SubBillForm: React.FC<SubBillFormProps> = ({
                   {...field}
                   onChange={(event) => {
                     const val = event.target.value;
-                    if (val === "") {
+                    if (val === '') {
                       field.onChange(undefined);
                     } else {
                       field.onChange(+val);
@@ -190,9 +180,7 @@ export const SubBillForm: React.FC<SubBillFormProps> = ({
               control={form.control}
               name="note"
               label="备注"
-              render={({ field }) => (
-                <Input placeholder="请输入备注" {...field} />
-              )}
+              render={({ field }) => <Input placeholder="请输入备注" {...field} />}
             />
             <FormItem
               control={form.control}
