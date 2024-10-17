@@ -1,7 +1,7 @@
 import React from 'react';
 import { cn } from '@easy-shadcn/utils';
 import { Button, buttonVariants } from '@easy-shadcn/react';
-import { useLedgerFormModal } from '@/features/ledger/ledger-form';
+import { LedgerFormAction } from '@/features/ledger/ledger-form';
 import { useGlobalStore } from '@/store/global';
 import { Ledger } from '@/domain/ledger';
 
@@ -12,7 +12,6 @@ interface LedgerMenuProps {
 
 const LedgerMenu: React.FC<LedgerMenuProps> = ({ className, ledgerList, ...props }) => {
   const { currentLedgerId, switchSelect } = useGlobalStore();
-  const [ledgerFormModalHost, ledgerFormModalAction] = useLedgerFormModal();
 
   if (!ledgerList || ledgerList.length === 0) {
     return null;
@@ -20,7 +19,7 @@ const LedgerMenu: React.FC<LedgerMenuProps> = ({ className, ledgerList, ...props
 
   return (
     <div className="p-8 pr-0">
-      <Button className="mb-4" onClick={() => ledgerFormModalAction.open()}>
+      <Button className="mb-4" onClick={() => LedgerFormAction.open()}>
         新建一个账本
       </Button>
       <nav className={cn('flex-col', className)} {...props}>
@@ -40,7 +39,6 @@ const LedgerMenu: React.FC<LedgerMenuProps> = ({ className, ledgerList, ...props
           </div>
         ))}
       </nav>
-      {ledgerFormModalHost}
     </div>
   );
 };

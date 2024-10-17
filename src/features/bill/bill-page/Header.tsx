@@ -2,7 +2,7 @@ import * as React from 'react';
 import { modalAction } from '@easy-shadcn/react';
 import { DropdownMenu } from '@easy-shadcn/react';
 import { FilePenLine, Settings2, Trash2 } from 'lucide-react';
-import { useLedgerFormModal } from '@/features/ledger/ledger-form';
+import { LedgerFormAction } from '@/features/ledger/ledger-form';
 import { useMutationDeleteLedger } from '@/store/ledger';
 import { useGlobalStore } from '@/store/global';
 import { Ledger } from '@/domain/ledger';
@@ -14,7 +14,6 @@ interface BillHeaderProps {
 const BillHeader: React.FC<BillHeaderProps> = ({ ledger }) => {
   const deleteLedger = useMutationDeleteLedger();
   const switchSelect = useGlobalStore((state) => state.switchSelect);
-  const [ledgerFormModalHost, ledgerFormModalAction] = useLedgerFormModal();
 
   return (
     <div className="flex items-center justify-between space-y-2">
@@ -29,7 +28,7 @@ const BillHeader: React.FC<BillHeaderProps> = ({ ledger }) => {
             name: '编辑',
             key: 'edit',
             onClick: () => {
-              ledgerFormModalAction.open({
+              LedgerFormAction.open({
                 data: ledger,
               });
             },
@@ -60,7 +59,6 @@ const BillHeader: React.FC<BillHeaderProps> = ({ ledger }) => {
       >
         <Settings2 />
       </DropdownMenu>
-      {ledgerFormModalHost}
     </div>
   );
 };
