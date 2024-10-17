@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Button } from '@easy-shadcn/react';
+import { Button, modalAction } from '@easy-shadcn/react';
 import { Form, FormItem, Input } from '@easy-shadcn/react';
 import { useMutationCreateLedger, useMutationUpdateLedger } from '@/store/ledger';
 import { Ledger } from '@/domain/ledger';
@@ -91,4 +91,26 @@ export const LedgerForm: React.FC<LedgerFormProps> = ({ data, onFinish }) => {
       </div>
     </Form>
   );
+};
+
+export const LedgerFormAction = {
+  open: (props?: LedgerFormProps) => {
+    const isEdit = !!props?.data;
+    const actionIns = modalAction.open({
+      title: isEdit ? '修改账本' : '新的账本',
+      description: `${isEdit ? '修改' : '新建'}你的账本，点击保存`,
+      contentProps: {
+        className: 'sm:max-w-[425px]',
+      },
+      content: (
+        <LedgerForm
+          {...props}
+          onFinish={() => {
+            actionIns.close();
+          }}
+        />
+      ),
+    });
+    return actionIns;
+  },
 };
