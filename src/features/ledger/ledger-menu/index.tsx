@@ -19,7 +19,12 @@ const LedgerMenu: React.FC<LedgerMenuProps> = ({ className, ledgerList, ...props
 
   return (
     <div className="p-8 pr-0">
-      <Button className="mb-4" onClick={() => LedgerFormAction.open()}>
+      <Button
+        className="mb-4"
+        onClick={() => {
+          LedgerFormAction.open();
+        }}
+      >
         新建一个账本
       </Button>
       <nav className={cn('flex-col', className)} {...props}>

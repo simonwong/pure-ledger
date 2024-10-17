@@ -1,15 +1,11 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import * as LedgersService from "@/infrastructure/ledger/api";
-import { useGlobalStore } from "./global";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import * as LedgersService from '@/infrastructure/ledger/api';
 
 export const useQueryLedgers = () => {
   return useQuery({
-    queryKey: ["ledgers"],
+    queryKey: ['ledgers'],
     queryFn: async () => {
       const res = await LedgersService.getLedgers();
-      if (res && res.length) {
-        useGlobalStore.getState().initCurrentLedger(res[0].id);
-      }
       return res;
     },
   });
@@ -17,7 +13,7 @@ export const useQueryLedgers = () => {
 
 export const useQueryLedger = (ledgerId: number | null) => {
   return useQuery({
-    queryKey: ["ledger", ledgerId],
+    queryKey: ['ledger', ledgerId],
     queryFn: ledgerId ? () => LedgersService.getLedger(ledgerId) : () => null,
   });
 };
@@ -28,7 +24,7 @@ export const useMutationCreateLedger = () => {
   return useMutation({
     mutationFn: LedgersService.createLedger,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["ledgers"] });
+      queryClient.invalidateQueries({ queryKey: ['ledgers'] });
     },
   });
 };
@@ -39,8 +35,8 @@ export const useMutationUpdateLedger = () => {
   return useMutation({
     mutationFn: LedgersService.updateLedger,
     onSuccess: (_, data) => {
-      queryClient.invalidateQueries({ queryKey: ["ledgers"] });
-      queryClient.invalidateQueries({ queryKey: ["ledger", data.id] });
+      queryClient.invalidateQueries({ queryKey: ['ledgers'] });
+      queryClient.invalidateQueries({ queryKey: ['ledger', data.id] });
     },
   });
 };
@@ -57,7 +53,7 @@ export const useMutationDeleteLedger = () => {
   return useMutation({
     mutationFn: LedgersService.deleteLedger,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["ledgers"] });
+      queryClient.invalidateQueries({ queryKey: ['ledgers'] });
     },
   });
 };
