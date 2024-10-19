@@ -19,7 +19,7 @@
     "createUpdaterArtifacts": true
   },
   "productName": "Pure Ledger",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "identifier": "com.simonwong.pureledger",
   "plugins": {
     "updater": {
