@@ -65,7 +65,7 @@ export const SubBillForm: React.FC<SubBillFormProps> = ({ parentBillData, data, 
     },
     defaultValues: {
       name: '',
-      amount: 0,
+      amount: undefined,
       type: parentBillData?.type,
       date: set(new Date(), { hours: 0, minutes: 0, seconds: 0 }),
       isInstallment: false,
