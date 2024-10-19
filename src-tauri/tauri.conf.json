@@ -42,7 +42,7 @@
     },
     "windows": [
       {
-        "title": "Pure Ledger",
+        "hiddenTitle": true,
         "width": 1400,
         "height": 900
       }
