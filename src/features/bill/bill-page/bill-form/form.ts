@@ -1,23 +1,23 @@
-import { BillType } from "@/domain/bill";
-import { Form } from "@easy-shadcn/react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { set } from "date-fns";
-import { z } from "zod";
+import { BillType } from '@/domain/bill';
+import { Form } from '@easy-shadcn/react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { set } from 'date-fns';
+import { z } from 'zod';
 
 export const BillFormSchema = z.object({
   name: z
     .string({
-      required_error: "请输入账单名称",
+      required_error: '请输入账单名称',
     })
     .trim()
-    .min(1, "至少输入1个字"),
+    .min(1, '至少输入1个字'),
   amount: z
     .number({
-      required_error: "请输入金额",
-      invalid_type_error: "请输入有效的金额",
+      required_error: '请输入金额',
+      invalid_type_error: '请输入有效的金额',
     })
-    .min(0, "最小金额填0")
-    .safe("超出金额限制"),
+    .min(0, '最小金额填0')
+    .safe('超出金额限制'),
   type: z.nativeEnum(BillType),
   isInstallment: z.boolean(),
   date: z.date(),
@@ -31,10 +31,10 @@ export const useBillForm = (defaultData?: Partial<BillFormData>) => {
   const form = Form.useForm<BillFormData>({
     resolver: zodResolver(BillFormSchema),
     defaultValues: {
-      name: "",
-      amount: 0,
+      name: '',
+      amount: undefined,
       date: set(new Date(), { hours: 0, minutes: 0, seconds: 0 }),
-      note: "",
+      note: '',
       isInstallment: false,
       ...defaultData,
     },

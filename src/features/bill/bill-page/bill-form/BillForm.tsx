@@ -173,7 +173,7 @@ export const BillForm: React.FC<BillFormProps> = ({ ledgerId, data, defaultData,
                   onChange={(event) => {
                     const val = event.target.value;
                     if (val === '') {
-                      field.onChange(undefined);
+                      field.onChange('');
                     } else {
                       field.onChange(+val);
                     }
