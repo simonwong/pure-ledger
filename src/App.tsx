@@ -1,6 +1,5 @@
 import LedgerMenu from '@/features/ledger/ledger-menu';
 import BillPage from '@/features/bill/bill-page';
-import { ModalHost } from '@easy-shadcn/react';
 import { Loader2Icon } from 'lucide-react';
 import { useQueryLedgers } from './store/ledger';
 
@@ -27,7 +26,6 @@ function App() {
           <BillPage />
         </div>
       </div>
-      <ModalHost />
     </>
   );
 }

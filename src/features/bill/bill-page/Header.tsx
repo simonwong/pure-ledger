@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { modalAction } from '@easy-shadcn/react';
+import { AlertModal, Modal } from '@easy-shadcn/react';
 import { DropdownMenu } from '@easy-shadcn/react';
 import { FilePenLine, Settings2, Trash2 } from 'lucide-react';
-import { LedgerFormAction } from '@/features/ledger/ledger-form';
+import { LedgerFormModal } from '@/features/ledger/ledger-form';
 import { useMutationDeleteLedger } from '@/store/ledger';
 import { useGlobalStore } from '@/store/global';
 import { Ledger } from '@/domain/ledger';
@@ -28,7 +28,7 @@ const BillHeader: React.FC<BillHeaderProps> = ({ ledger }) => {
             name: '编辑',
             key: 'edit',
             onClick: () => {
-              LedgerFormAction.open({
+              Modal.show(LedgerFormModal, {
                 data: ledger,
               });
             },
@@ -43,7 +43,7 @@ const BillHeader: React.FC<BillHeaderProps> = ({ ledger }) => {
                 key: 'trash',
                 className: 'focus:bg-red-500',
                 onClick: () => {
-                  modalAction.confirm({
+                  AlertModal.confirm({
                     title: '是否确认删除',
                     content: '危险操作哦，删除后这个账本的数据将无法恢复',
                     onConfirm: async () => {

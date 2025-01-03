@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { Card } from '@easy-shadcn/react';
+import { Card, Modal } from '@easy-shadcn/react';
 import { Bill, BillType } from '@/domain/bill';
 import { Button } from '@easy-shadcn/react';
 import { DollarSignIcon, HandCoinsIcon } from 'lucide-react';
 import { useQueryBills } from '@/store/bill';
 import BillItem from './BillItem';
-import { BillFormModal } from '../bill-form/actions';
+import { BillFormModal } from '../bill-form/BillForm';
 
 interface BillListProps {
   ledgerId: number;
@@ -30,7 +30,7 @@ const BillList: React.FC<BillListProps> = ({ ledgerId }) => {
                 variant="secondary"
                 className="hover:bg-primary"
                 onClick={() => {
-                  BillFormModal.open({
+                  Modal.show(BillFormModal, {
                     ledgerId,
                     defaultData: {
                       type: BillType.EXPEND,
@@ -45,7 +45,7 @@ const BillList: React.FC<BillListProps> = ({ ledgerId }) => {
                 variant="secondary"
                 className="hover:bg-primary"
                 onClick={() => {
-                  BillFormModal.open({
+                  Modal.show(BillFormModal, {
                     ledgerId,
                     defaultData: {
                       type: BillType.INCOME,

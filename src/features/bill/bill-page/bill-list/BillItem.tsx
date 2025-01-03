@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { Bill } from '@/domain/bill';
-import { Button, DropdownMenu, DropdownMenuProps, modalAction } from '@easy-shadcn/react';
+import { Button, DropdownMenu, DropdownMenuProps, AlertModal, Modal } from '@easy-shadcn/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useMutationDeleteBill } from '@/store/bill';
 import { EllipsisVerticalIcon } from 'lucide-react';
 import AmountDisplay from '../AmountDisplay';
-import { SubBillFormModal, useBillFormModal } from '../bill-form/actions';
+import { SubBillFormModal } from '../bill-form/SubBillForm';
 import SubBillItem from './SubBillItem';
 import { ImageList } from '@/components/ImageList';
 import { amountShow } from '@/lib/math';
 import { dateShow } from '@/lib/date';
+import { BillFormModal } from '../bill-form/BillForm';
 
 interface BillItemProps {
   ledgerId: number;
@@ -44,13 +45,8 @@ const BillItem: React.FC<BillItemProps> = ({ ledgerId, bill }) => {
       </AnimatePresence>
     );
   };
-  const billFormModal = useBillFormModal(
-    {
-      ledgerId,
-      data: bill,
-    },
-    [ledgerId, bill]
-  );
+
+  const [billFormModalAction, BillFormModalHolder] = Modal.useModalHolder(BillFormModal);
 
   return (
     <div>
@@ -85,10 +81,9 @@ const BillItem: React.FC<BillItemProps> = ({ ledgerId, bill }) => {
                           key: 'addSub',
                           disabled: isClean,
                           onClick: () => {
-                            SubBillFormModal.open(
-                              { parentBillData: bill },
-                              { billName: bill.name }
-                            );
+                            Modal.show(SubBillFormModal, {
+                              parentBillData: bill,
+                            });
                           },
                         },
                         {
@@ -106,14 +101,14 @@ const BillItem: React.FC<BillItemProps> = ({ ledgerId, bill }) => {
                   name: '编辑',
                   key: 'edit',
                   onClick: () => {
-                    billFormModal.open();
+                    billFormModalAction.show();
                   },
                 },
                 {
                   name: '删除',
                   key: 'delete',
                   onClick: () => {
-                    modalAction.confirm({
+                    AlertModal.confirm({
                       title: '是否确认删除',
                       content: '删除后无法找回',
                       onConfirm: () => {
@@ -135,6 +130,8 @@ const BillItem: React.FC<BillItemProps> = ({ ledgerId, bill }) => {
         </div>
       </div>
       {renderSubBillList(bill.subBills!, bill)}
+
+      <BillFormModalHolder ledgerId={ledgerId} data={bill} />
     </div>
   );
 };
