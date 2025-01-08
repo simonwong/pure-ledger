@@ -4,7 +4,6 @@ import { DropdownMenu } from '@easy-shadcn/react';
 import { FilePenLine, Settings2, Trash2 } from 'lucide-react';
 import { LedgerFormModal } from '@/features/ledger/ledger-form';
 import { useMutationDeleteLedger } from '@/store/ledger';
-import { useGlobalStore } from '@/store/global';
 import { Ledger } from '@/domain/ledger';
 
 interface BillHeaderProps {
@@ -13,7 +12,6 @@ interface BillHeaderProps {
 
 const BillHeader: React.FC<BillHeaderProps> = ({ ledger }) => {
   const deleteLedger = useMutationDeleteLedger();
-  const switchSelect = useGlobalStore((state) => state.switchSelect);
 
   return (
     <div className="flex items-center justify-between space-y-2">
@@ -48,7 +46,6 @@ const BillHeader: React.FC<BillHeaderProps> = ({ ledger }) => {
                     content: '危险操作哦，删除后这个账本的数据将无法恢复',
                     onConfirm: async () => {
                       await deleteLedger.mutateAsync(ledger.id);
-                      switchSelect(null);
                     },
                   });
                 },
