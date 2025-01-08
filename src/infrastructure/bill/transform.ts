@@ -1,26 +1,26 @@
-import { CreateBill, Bill, UpdateBill } from "@/domain/bill";
-import { CreateBillInput, BillTDO, UpdateBillInput } from "./type";
-import BigNumber from "bignumber.js";
+import { CreateBill, Bill, UpdateBill } from '@/domain/bill';
+import BigNumber from 'bignumber.js';
+import { InsertBillInput, SelectBillOutput, UpdateBillInput } from './type';
 
-export const dtoToBill = (dto: BillTDO): Bill => {
+export const dtoToBill = (dto: SelectBillOutput): Bill => {
   return {
     id: dto.id,
     name: dto.name,
     type: dto.type,
     amount: dto.amount,
-    actualAmount: dto.is_installment ? 0 : dto.amount,
+    actualAmount: dto.isInstallment ? 0 : dto.amount,
     date: dto.date,
-    note: dto.note,
-    filePaths: dto.file_path ? dto.file_path.split(",") : undefined,
-    ledgerId: dto.ledger_id,
-    parentBillId: dto.parent_bill_id,
-    createdAt: dto.created_at,
-    updatedAt: dto.updated_at,
-    isInstallment: !!dto.is_installment,
+    note: dto.note || undefined,
+    filePaths: dto.filePath ? dto.filePath.split(',') : undefined,
+    ledgerId: dto.ledgerId!,
+    parentBillId: dto.parentBillId || undefined,
+    createdAt: dto.createdAt!,
+    updatedAt: dto.updatedAt!,
+    isInstallment: !!dto.isInstallment,
   };
 };
 
-export const dtoListToBills = (dtoList: BillTDO[]): Bill[] => {
+export const dtoListToBills = (dtoList: SelectBillOutput[]): Bill[] => {
   const res: Bill[] = [];
   const parentBillMap: Record<string, Bill[]> = {};
 
@@ -50,17 +50,17 @@ export const dtoListToBills = (dtoList: BillTDO[]): Bill[] => {
   return res;
 };
 
-export const createBillToInput = (data: CreateBill): CreateBillInput => {
+export const createBillToInput = (data: CreateBill): InsertBillInput => {
   return {
     name: data.name,
     type: data.type,
     amount: data.amount,
     date: data.date,
     note: data.note,
-    ledger_id: data.ledgerId,
-    parent_bill_id: data.parentBillId,
-    file_path: data.filePaths?.filter(Boolean).join(","),
-    is_installment: data.isInstallment ? 1 : 0,
+    ledgerId: data.ledgerId,
+    parentBillId: data.parentBillId,
+    filePath: data.filePaths?.filter(Boolean).join(','),
+    isInstallment: data.isInstallment ? 1 : 0,
   };
 };
 
@@ -72,9 +72,9 @@ export const updateBillToInput = (data: UpdateBill): UpdateBillInput => {
     amount: data.amount,
     date: data.date,
     note: data.note,
-    ledger_id: data.ledgerId,
-    parent_bill_id: data.parentBillId,
-    file_path: data.filePaths?.filter(Boolean).join(","),
-    is_installment: data.isInstallment ? 1 : 0,
+    ledgerId: data.ledgerId,
+    parentBillId: data.parentBillId,
+    filePath: data.filePaths?.filter(Boolean).join(','),
+    isInstallment: data.isInstallment ? 1 : 0,
   };
 };

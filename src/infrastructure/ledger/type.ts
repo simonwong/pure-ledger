@@ -1,16 +1,10 @@
-import {
-  BaseDBData,
-  CreateDBData,
-  UpdateDBData,
-} from "@/infrastructure/dbType";
+import { type InferSelectModel, type InferInsertModel } from 'drizzle-orm';
+import { ledgers } from '@/db/schema';
 
-export interface LedgerDTO extends BaseDBData {
-  name: string;
-  note?: string;
-}
+export type SelectLedgerOutput = InferSelectModel<typeof ledgers>;
 
-export type CreateLedgerInput = CreateDBData<LedgerDTO>;
+export type InsertLedgerInput = InferInsertModel<typeof ledgers>;
 
-export type UpdateLedgerInput = UpdateDBData<LedgerDTO>;
+export type UpdateLedgerInput = Partial<InsertLedgerInput>;
 
-export type DeleteLedgerInput = LedgerDTO["id"];
+export type DeleteLedgerInput = Pick<InsertLedgerInput, 'id'>;

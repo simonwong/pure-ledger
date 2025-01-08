@@ -1,35 +1,39 @@
-import { ORM } from "@/infrastructure/orm";
-import { removeStorageFoldByLedgerId } from "@/lib/storageFile";
+import { removeStorageFoldByLedgerId } from '@/lib/storageFile';
 import {
   createLedgerToInput,
   dtoListToLedgers,
   dtoToLedger,
   updateLedgerToInput,
-} from "./transform";
-import { CreateLedger, DeleteLedger, UpdateLedger } from "@/domain/ledger";
+} from './transform';
+import { CreateLedger, DeleteLedger, Ledger, UpdateLedger } from '@/domain/ledger';
+import { db } from '@/db';
+import { ledgers } from '@/db/schema';
+import { eq } from 'drizzle-orm';
 
 export const getLedgers = async () => {
-  const res = await ORM.selectAll("ledgers");
+  const res = await db.select().from(ledgers);
 
-  return dtoListToLedgers(res);
+  return dtoListToLedgers(res) as Ledger[];
 };
 
 export const getLedger = async (ledgerId: number) => {
-  const res = await ORM.selectById("ledgers", ledgerId);
+  const res = await db.select().from(ledgers).where(eq(ledgers.id, ledgerId)).get();
 
-  return res ? dtoToLedger(res) : null;
+  return res ? dtoToLedger(res) : undefined;
 };
 
 export const createLedger = async (data: CreateLedger) => {
-  const id = await ORM.insert("ledgers", createLedgerToInput(data));
-  return id;
+  const res = await db.insert(ledgers).values(createLedgerToInput(data));
+
+  // TODO: 处理 lastInsertId 类型
+  return res.lastInsertId as number;
 };
 
 export const updateLedger = async (data: UpdateLedger) => {
-  await ORM.updateById("ledgers", updateLedgerToInput(data), data.id);
+  await db.update(ledgers).set(updateLedgerToInput(data)).where(eq(ledgers.id, data.id));
 };
 
 export const deleteLedger = async (id: DeleteLedger) => {
-  await ORM.deleteById("ledgers", id);
+  await db.delete(ledgers).where(eq(ledgers.id, id));
   await removeStorageFoldByLedgerId(String(id));
 };

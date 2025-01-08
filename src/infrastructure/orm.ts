@@ -1,12 +1,48 @@
-import { db } from "./database";
-import type { BillTDO, CreateBillInput, UpdateBillInput } from "./bill/type";
-import type {
-  CreateLedgerInput,
-  LedgerDTO,
-  UpdateLedgerInput,
-} from "./ledger/type";
+// No longer used
 
-type TableName = "ledgers" | "bills";
+import Database from '@tauri-apps/plugin-sql';
+
+const db = await Database.load('sqlite:test.db');
+
+import { BaseDBData, CreateDBData, UpdateDBData } from '@/infrastructure/dbType';
+
+enum BillType {
+  /** 支出 */
+  EXPEND = 1,
+  /** 收入 */
+  INCOME = 2,
+}
+
+interface BillTDO extends BaseDBData {
+  ledger_id: number;
+  parent_bill_id?: number;
+  name: string;
+  type: BillType;
+  amount: number;
+  date: string;
+  note?: string;
+  file_path?: string;
+  is_installment: 0 | 1;
+}
+
+type CreateBillInput = CreateDBData<BillTDO>;
+
+type UpdateBillInput = UpdateDBData<BillTDO>;
+
+type DeleteBillInput = BillTDO;
+
+interface LedgerDTO extends BaseDBData {
+  name: string;
+  note?: string;
+}
+
+type CreateLedgerInput = CreateDBData<LedgerDTO>;
+
+type UpdateLedgerInput = UpdateDBData<LedgerDTO>;
+
+type DeleteLedgerInput = LedgerDTO['id'];
+
+type TableName = 'ledgers' | 'bills';
 
 type SelectResult = {
   ledgers: LedgerDTO;
@@ -24,12 +60,9 @@ type UpdateParams = {
 };
 
 export class ORM {
-  static async selectAll<T extends TableName>(
-    tableName: T,
-    where?: Partial<SelectResult[T]>
-  ) {
+  static async selectAll<T extends TableName>(tableName: T, where?: Partial<SelectResult[T]>) {
     const bindValues: unknown[] = [];
-    let whereText = "";
+    let whereText = '';
     let replaceCount = 0;
 
     if (where) {
@@ -41,7 +74,7 @@ export class ORM {
         bindValues.push(where[key]);
       });
       if (whereTexts.length) {
-        whereText = ` WHERE ${whereTexts.join(", ")}`;
+        whereText = ` WHERE ${whereTexts.join(', ')}`;
       }
     }
 
@@ -63,18 +96,15 @@ export class ORM {
     return null;
   }
 
-  static async insert<T extends TableName>(
-    tableName: T,
-    data: InsertParams[T]
-  ) {
+  static async insert<T extends TableName>(tableName: T, data: InsertParams[T]) {
     const keys = Object.keys(data) as Array<keyof InsertParams[T]>;
 
     if (keys.length === 0) {
       return null;
     }
 
-    const queryCols = keys.join(", ");
-    const queryValReplaces = keys.map((_, idx) => `$${idx + 1}`).join(", ");
+    const queryCols = keys.join(', ');
+    const queryValReplaces = keys.map((_, idx) => `$${idx + 1}`).join(', ');
 
     const res = await db.execute(
       `INSERT INTO ${tableName} (${queryCols}) VALUES (${queryValReplaces})`,
@@ -83,11 +113,7 @@ export class ORM {
     return res.lastInsertId;
   }
 
-  static async updateById<T extends TableName>(
-    tableName: T,
-    data: UpdateParams[T],
-    id: unknown
-  ) {
+  static async updateById<T extends TableName>(tableName: T, data: UpdateParams[T], id: unknown) {
     if (Object.keys(data).length === 0) {
       return;
     }
@@ -96,9 +122,7 @@ export class ORM {
 
     const keys = Object.keys(data) as Array<keyof UpdateParams[T]>;
     let replaceCount = 0;
-    const queryValReplaces = keys
-      .map((key) => `${String(key)} = $${++replaceCount}`)
-      .join(", ");
+    const queryValReplaces = keys.map((key) => `${String(key)} = $${++replaceCount}`).join(', ');
 
     await db.execute(
       `UPDATE ${tableName} SET ${queryValReplaces}, updated_at = datetime('now', 'localtime') WHERE id = $${++replaceCount}`,
