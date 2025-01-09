@@ -37,8 +37,9 @@ const BillList: React.FC<BillListProps> = ({ ledgerId }) => {
                     },
                   });
                 }}
+                icon={<HandCoinsIcon />}
               >
-                <HandCoinsIcon className="mr-2 h-4 w-4" /> 添加支出账单
+                添加支出账单
               </Button>
               <Button
                 size="sm"
@@ -52,8 +53,9 @@ const BillList: React.FC<BillListProps> = ({ ledgerId }) => {
                     },
                   });
                 }}
+                icon={<DollarSignIcon />}
               >
-                <DollarSignIcon className="mr-2 h-4 w-4" /> 添加收入账单
+                添加收入账单
               </Button>
             </div>
           </div>

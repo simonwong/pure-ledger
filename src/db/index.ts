@@ -2,8 +2,8 @@ import Database from '@tauri-apps/plugin-sql';
 import { drizzle } from 'drizzle-orm/sqlite-proxy';
 import * as schema from './schema';
 
-// const sqliteDB = await Database.load('sqlite:ledger.db');
-const sqliteDB = await Database.load('sqlite:test.db');
+const sqliteDB = await Database.load('sqlite:ledger.db');
+// const sqliteDB = await Database.load('sqlite:test.db');
 
 // 参考：https://github.com/tdwesten/tauri-drizzle-sqlite-proxy-demo/blob/main/src/db/database.ts
 
