@@ -23,9 +23,11 @@ export const getBill = async (billId: number) => {
 };
 
 export const createBill = async (data: CreateBill) => {
-  const res = await db.insert(bills).values(createBillToInput(data));
+  const res = (await db.insert(bills).values(createBillToInput(data))) as {
+    lastInsertId: number;
+  };
   // TODO: 处理 lastInsertId 类型
-  return res.lastInsertId as number;
+  return res.lastInsertId;
 };
 
 export const updateBill = async (data: UpdateBill) => {

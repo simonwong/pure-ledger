@@ -23,10 +23,12 @@ export const getLedger = async (ledgerId: number) => {
 };
 
 export const createLedger = async (data: CreateLedger) => {
-  const res = await db.insert(ledgers).values(createLedgerToInput(data));
+  const res = (await db.insert(ledgers).values(createLedgerToInput(data))) as {
+    lastInsertId: number;
+  };
 
   // TODO: 处理 lastInsertId 类型
-  return res.lastInsertId as number;
+  return res.lastInsertId;
 };
 
 export const updateLedger = async (data: UpdateLedger) => {

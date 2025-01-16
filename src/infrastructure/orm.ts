@@ -29,8 +29,6 @@ type CreateBillInput = CreateDBData<BillTDO>;
 
 type UpdateBillInput = UpdateDBData<BillTDO>;
 
-type DeleteBillInput = BillTDO;
-
 interface LedgerDTO extends BaseDBData {
   name: string;
   note?: string;
@@ -40,7 +38,7 @@ type CreateLedgerInput = CreateDBData<LedgerDTO>;
 
 type UpdateLedgerInput = UpdateDBData<LedgerDTO>;
 
-type DeleteLedgerInput = LedgerDTO['id'];
+// type DeleteLedgerInput = LedgerDTO['id'];
 
 type TableName = 'ledgers' | 'bills';
 

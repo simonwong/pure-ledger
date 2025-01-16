@@ -167,15 +167,19 @@ const BaseSeedData = [
 
 const createSeedData = async (
   db: ReturnType<typeof getDrizzleSqliteDB>,
-  seedData: typeof SeedData
+  seedData: typeof BaseSeedData
 ) => {
   for (const { name, note, bills: billList } of seedData) {
-    const ledgerRes = await db.insert(ledgers).values({ name, note });
+    const ledgerRes = (await db.insert(ledgers).values({ name, note })) as {
+      lastInsertId: number;
+    };
 
     const ledgerId = ledgerRes.lastInsertId;
 
     for (const { subBills, ...billFirst } of billList || []) {
-      const billRes = await db.insert(bills).values({ ...billFirst, ledgerId });
+      const billRes = (await db.insert(bills).values({ ...billFirst, ledgerId })) as {
+        lastInsertId: number;
+      };
       const billId = billRes.lastInsertId;
       for (const bill of subBills || []) {
         await db.insert(bills).values({ ...bill, ledgerId, parentBillId: billId });
