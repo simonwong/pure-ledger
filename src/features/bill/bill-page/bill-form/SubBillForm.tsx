@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { z } from 'zod';
-import { Button, DatePicker, Form, FormItem, Input } from '@easy-shadcn/react';
+import { Button, DatePicker, Form, FormItem, Input, Modal } from '@easy-shadcn/react';
 import { useMutationCreateBill, useMutationUpdateBill } from '@/store/bill';
 import { BillType } from '@/domain/bill';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -42,8 +42,9 @@ export type SubBillFormProps = {
   data?: Bill;
 };
 
-export const SubBillForm: React.FC<SubBillFormProps> = ({ parentBillData, data, onFinish }) => {
-  const [loading, setLoading] = useState(false);
+export const SubBillFormModal = Modal.create(({ parentBillData, data }: SubBillFormProps) => {
+  const { modalProps, hide } = Modal.useModal();
+
   const createBill = useMutationCreateBill();
   const updateBill = useMutationUpdateBill();
 
@@ -109,100 +110,107 @@ export const SubBillForm: React.FC<SubBillFormProps> = ({ parentBillData, data, 
         parentBillId: parentBillData!.id,
       });
     }
-    onFinish?.();
+    hide();
   };
 
   const handleConfirm = async (formData: FormData) => {
-    setLoading(true);
-    try {
-      await handleSubmit?.(formData);
-    } finally {
-      setLoading(false);
-    }
+    await handleSubmit?.(formData);
   };
 
   const typeText = type === BillType.EXPEND ? '支出' : '收入';
 
+  const prefixText = !!data ? '修改' : '新增';
+
   return (
-    <Form form={form} onSubmit={form.handleSubmit(handleConfirm)}>
-      <div className="py-4 space-y-4">
-        <div className="flex gap-4 items-center">
-          <div className="flex-1"></div>
-          <div className="flex-1"></div>
-        </div>
-        <div className="flex gap-4">
-          <div className="flex-1 space-y-4">
-            <FormItem
-              control={form.control}
-              name="name"
-              label="账单名称"
-              render={({ field }) => <Input placeholder="请输入账单名称" {...field} />}
-            />
-            <FormItem
-              control={form.control}
-              name="amount"
-              label={`${typeText}金额`}
-              render={({ field }) => (
-                <Input
-                  type="number"
-                  placeholder="请输入金额"
-                  {...field}
-                  onChange={(event) => {
-                    const val = event.target.value;
-                    if (val === '') {
-                      field.onChange(undefined);
-                    } else {
-                      field.onChange(+val);
-                    }
-                  }}
+    <Modal
+      {...modalProps}
+      title={`${prefixText}${parentBillData.name}子账单`}
+      description={`${prefixText}${parentBillData.name}子账单，点击保存`}
+      contentProps={{
+        className: 'sm:max-w-[725px]',
+      }}
+      content={
+        <Form form={form} onSubmit={(e) => e.preventDefault()}>
+          <div className="py-4 space-y-4">
+            <div className="flex gap-4 items-center">
+              <div className="flex-1"></div>
+              <div className="flex-1"></div>
+            </div>
+            <div className="flex gap-4">
+              <div className="flex-1 space-y-4">
+                <FormItem
+                  control={form.control}
+                  name="name"
+                  label="账单名称"
+                  render={({ field }) => <Input placeholder="请输入账单名称" {...field} />}
                 />
-              )}
-            />
-            <FormItem
-              control={form.control}
-              name="date"
-              label="时间"
-              render={({ field }) => (
-                <DatePicker
-                  buttonClassName="w-full"
-                  selected={field.value}
-                  onSelect={(val) => {
-                    if (val) {
-                      field.onChange(val);
-                    }
-                  }}
+                <FormItem
+                  control={form.control}
+                  name="amount"
+                  label={`${typeText}金额`}
+                  render={({ field }) => (
+                    <Input
+                      type="number"
+                      placeholder="请输入金额"
+                      {...field}
+                      onChange={(event) => {
+                        const val = event.target.value;
+                        if (val === '') {
+                          field.onChange(undefined);
+                        } else {
+                          field.onChange(+val);
+                        }
+                      }}
+                    />
+                  )}
                 />
-              )}
-            />
+                <FormItem
+                  control={form.control}
+                  name="date"
+                  label="时间"
+                  render={({ field }) => (
+                    <DatePicker
+                      buttonClassName="w-full"
+                      selected={field.value}
+                      onSelect={(val) => {
+                        if (val) {
+                          field.onChange(val);
+                        }
+                      }}
+                    />
+                  )}
+                />
+              </div>
+              <div className="flex-1 space-y-4">
+                <FormItem
+                  control={form.control}
+                  name="note"
+                  label="备注"
+                  render={({ field }) => <Input placeholder="请输入备注" {...field} />}
+                />
+                <FormItem
+                  control={form.control}
+                  name="filePaths"
+                  label="文件"
+                  render={({ field }) => (
+                    <FileUploader
+                      ref={fileUploadRef}
+                      ledgerId={(parentBillData?.ledgerId || data?.ledgerId)!}
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
+              </div>
+            </div>
           </div>
-          <div className="flex-1 space-y-4">
-            <FormItem
-              control={form.control}
-              name="note"
-              label="备注"
-              render={({ field }) => <Input placeholder="请输入备注" {...field} />}
-            />
-            <FormItem
-              control={form.control}
-              name="filePaths"
-              label="文件"
-              render={({ field }) => (
-                <FileUploader
-                  ref={fileUploadRef}
-                  ledgerId={(parentBillData?.ledgerId || data?.ledgerId)!}
-                  value={field.value}
-                  onChange={field.onChange}
-                />
-              )}
-            />
-          </div>
+        </Form>
+      }
+      footer={
+        <div className="flex justify-end">
+          <Button onClick={form.handleSubmit(handleConfirm)}>保存</Button>
         </div>
-      </div>
-      <div className="flex justify-end">
-        <Button loading={loading} type="submit">
-          保存
-        </Button>
-      </div>
-    </Form>
+      }
+    />
   );
-};
+});

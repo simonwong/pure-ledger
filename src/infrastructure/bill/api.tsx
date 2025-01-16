@@ -1,46 +1,40 @@
-import { removeStorageFileBatch } from "@/lib/storageFile";
-import { ORM } from "@/infrastructure/orm";
-import {
-  createBillToInput,
-  dtoListToBills,
-  dtoToBill,
-  updateBillToInput,
-} from "./transform";
-import { Bill, CreateBill, UpdateBill } from "@/domain/bill";
-import { compareDesc } from "date-fns";
+import { removeStorageFileBatch } from '@/lib/storageFile';
+import { createBillToInput, dtoListToBills, dtoToBill, updateBillToInput } from './transform';
+import { Bill, CreateBill, UpdateBill } from '@/domain/bill';
+import { db } from '@/db';
+import { bills } from '@/db/schema';
+import { desc, eq } from 'drizzle-orm';
 
 export const getBills = async (ledgerId: number) => {
-  const res = await ORM.selectAll("bills", {
-    ledger_id: ledgerId,
-  });
+  const billList = await db
+    .select()
+    .from(bills)
+    .where(eq(bills.ledgerId, ledgerId))
+    .orderBy(desc(bills.date), desc(bills.createdAt));
 
-  // date > amount
-  return dtoListToBills(
-    res.sort((a, b) => {
-      const res = compareDesc(a.date, b.date);
-      if (res === 0) {
-        return b.amount - a.amount;
-      }
-      return res;
-    })
-  );
+  // date > createdAt
+  return dtoListToBills(billList);
 };
 
 export const getBill = async (billId: number) => {
-  const res = await ORM.selectById("bills", billId);
-  return res ? dtoToBill(res) : null;
+  const bill = await db.select().from(bills).where(eq(bills.id, billId)).get();
+
+  return bill ? dtoToBill(bill) : null;
 };
 
 export const createBill = async (data: CreateBill) => {
-  const id = await ORM.insert("bills", createBillToInput(data));
-  return id;
+  const res = (await db.insert(bills).values(createBillToInput(data))) as {
+    lastInsertId: number;
+  };
+  // TODO: 处理 lastInsertId 类型
+  return res.lastInsertId;
 };
 
 export const updateBill = async (data: UpdateBill) => {
-  await ORM.updateById("bills", updateBillToInput(data), data.id);
+  await db.update(bills).set(updateBillToInput(data)).where(eq(bills.id, data.id));
 };
 
 export const deleteBill = async (bill: Bill) => {
-  await ORM.deleteById("bills", bill.id);
+  await db.delete(bills).where(eq(bills.id, bill.id));
   bill.filePaths && (await removeStorageFileBatch(bill.filePaths));
 };

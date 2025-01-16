@@ -2,8 +2,8 @@ import { Bill } from '@/domain/bill';
 import React from 'react';
 import { ImageList } from '@/components/ImageList';
 import AmountDisplay from '../AmountDisplay';
-import { Button, DropdownMenu, modalAction } from '@easy-shadcn/react';
-import { SubBillFormModal } from '../bill-form/actions';
+import { Button, DropdownMenu, AlertModal, Modal } from '@easy-shadcn/react';
+import { SubBillFormModal } from '../bill-form/SubBillForm';
 import { useMutationDeleteBill } from '@/store/bill';
 import { EllipsisVerticalIcon } from 'lucide-react';
 import { dateShow } from '@/lib/date';
@@ -34,22 +34,17 @@ const SubBillItem: React.FC<SubBillItemProps> = ({ subBill, parentBill }) => {
               name: '编辑',
               key: 'edit',
               onClick: () => {
-                SubBillFormModal.open(
-                  {
-                    data: subBill,
-                    parentBillData: parentBill,
-                  },
-                  {
-                    billName: parentBill.name,
-                  }
-                );
+                Modal.show(SubBillFormModal, {
+                  data: subBill,
+                  parentBillData: parentBill,
+                });
               },
             },
             {
               name: '删除',
               key: 'delete',
               onClick: () => {
-                modalAction.confirm({
+                AlertModal.confirm({
                   title: '是否确认删除',
                   content: '删除后无法找回',
                   onConfirm: () => {

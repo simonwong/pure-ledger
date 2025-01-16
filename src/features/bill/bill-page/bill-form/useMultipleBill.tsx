@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
-import { Button } from '@easy-shadcn/react';
+import { Button, Modal } from '@easy-shadcn/react';
 import { getBill } from '@/infrastructure/bill/api';
 import { Bill } from '@/domain/bill';
-import { SubBillFormModal } from './actions';
+import { SubBillFormModal } from './SubBillForm';
 import SubBillItem from '../bill-list/SubBillItem';
 import BigNumber from 'bignumber.js';
 
@@ -43,14 +43,9 @@ export const useMultipleBill = ({
                   await beforeOpenToSaveParent();
                   await new Promise<void>((resolve) => {
                     setTimeout(() => {
-                      SubBillFormModal.open(
-                        {
-                          parentBillData: data,
-                        },
-                        {
-                          billName: data.name,
-                        }
-                      );
+                      Modal.show(SubBillFormModal, {
+                        parentBillData: data,
+                      });
                       resolve();
                     }, 300);
                   });
@@ -72,14 +67,9 @@ export const useMultipleBill = ({
     if (isSubmitAndAddSubBill && billId) {
       const billData = await getBill(billId);
       if (billData) {
-        SubBillFormModal.open(
-          {
-            parentBillData: billData,
-          },
-          {
-            billName: billData.name,
-          }
-        );
+        Modal.show(SubBillFormModal, {
+          parentBillData: billData,
+        });
       }
     }
   };

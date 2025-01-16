@@ -1,10 +1,10 @@
-import React, { useImperativeHandle, useState } from "react";
-import { Button } from "@easy-shadcn/react";
-import { UploadIcon } from "lucide-react";
-import { open } from "@tauri-apps/plugin-dialog";
-import { ImageList } from "@/components/ImageList";
-import { copyFileByLedgerId, removeStorageFile } from "@/lib/storageFile";
-import { UploadFileData } from "./type";
+import React, { useImperativeHandle, useState } from 'react';
+import { Button } from '@easy-shadcn/react';
+import { UploadIcon } from 'lucide-react';
+import { open } from '@tauri-apps/plugin-dialog';
+import { ImageList } from '@/components/ImageList';
+import { copyFileByLedgerId, removeStorageFile } from '@/lib/storageFile';
+import { UploadFileData } from './type';
 
 // UploadFileData 表示被上传的本地文件，string 表示已经存到app中的文件路径
 type FileType = UploadFileData | string;
@@ -35,19 +35,14 @@ const FileUploader = React.forwardRef<FileUploaderAction, FileUploaderProps>(
       ref,
       () => ({
         fileChanged: async () => {
-          await Promise.all(
-            removeFilePaths.map((path) => removeStorageFile(path))
-          );
+          await Promise.all(removeFilePaths.map((path) => removeStorageFile(path)));
 
           let resFilePaths: string[] = [];
           for (const file of value || []) {
-            if (typeof file === "string") {
+            if (typeof file === 'string') {
               resFilePaths.push(file);
             } else {
-              const filePath = await copyFileByLedgerId(
-                file.path,
-                String(ledgerId)
-              );
+              const filePath = await copyFileByLedgerId(file.path, String(ledgerId));
               resFilePaths.push(filePath);
             }
           }
@@ -61,9 +56,7 @@ const FileUploader = React.forwardRef<FileUploaderAction, FileUploaderProps>(
       const files = await open({
         multiple: true,
         directory: false,
-        filters: [
-          { name: "image", extensions: ["svg", "png", "jpg", "jpeg", "webp"] },
-        ],
+        filters: [{ name: 'image', extensions: ['svg', 'png', 'jpg', 'jpeg', 'webp'] }],
       });
       if (files) {
         const innerFiles = files.map((url) => ({
@@ -80,15 +73,14 @@ const FileUploader = React.forwardRef<FileUploaderAction, FileUploaderProps>(
       filePaths.splice(idx, 1);
       onChange?.(filePaths);
 
-      if (typeof path === "string") {
+      if (typeof path === 'string') {
         setRemoveFilePaths((p) => [...p, path]);
       }
     };
 
     return (
       <div>
-        <Button variant="outline" type="button" onClick={handleClickUpload}>
-          <UploadIcon className="mr-2 h-4 w-4" />
+        <Button icon={<UploadIcon />} variant="outline" type="button" onClick={handleClickUpload}>
           点击上传文件
         </Button>
         {value && (

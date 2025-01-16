@@ -1,21 +1,21 @@
-import { CreateLedger, Ledger, UpdateLedger } from "@/domain/ledger";
-import { CreateLedgerInput, LedgerDTO, UpdateLedgerInput } from "./type";
+import { CreateLedger, UpdateLedger, Ledger } from '@/domain/ledger';
+import { InsertLedgerInput, SelectLedgerOutput, UpdateLedgerInput } from './type';
 
-export const dtoToLedger = (dto: LedgerDTO): Ledger => {
+export const dtoToLedger = (dto: SelectLedgerOutput): Ledger => {
   return {
     id: dto.id,
     name: dto.name,
-    note: dto.note,
-    createdAt: dto.created_at,
-    updatedAt: dto.updated_at,
+    note: dto.note || undefined,
+    createdAt: dto.createdAt!,
+    updatedAt: dto.updatedAt!,
   };
 };
 
-export const dtoListToLedgers = (dtoList: LedgerDTO[]): Ledger[] => {
-  return dtoList.map((item) => dtoToLedger(item));
+export const dtoListToLedgers = (dtoList: SelectLedgerOutput[]): Ledger[] => {
+  return dtoList.map((dto) => dtoToLedger(dto));
 };
 
-export const createLedgerToInput = (data: CreateLedger): CreateLedgerInput => {
+export const createLedgerToInput = (data: CreateLedger): InsertLedgerInput => {
   return data;
 };
 

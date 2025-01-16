@@ -1,7 +1,7 @@
 import React from 'react';
 import { cn } from '@easy-shadcn/utils';
-import { Button, buttonVariants } from '@easy-shadcn/react';
-import { LedgerFormAction } from '@/features/ledger/ledger-form';
+import { Button, buttonVariants, Modal } from '@easy-shadcn/react';
+import { LedgerFormModal } from '@/features/ledger/ledger-form';
 import { useGlobalStore } from '@/store/global';
 import { Ledger } from '@/domain/ledger';
 
@@ -22,7 +22,7 @@ const LedgerMenu: React.FC<LedgerMenuProps> = ({ className, ledgerList, ...props
       <Button
         className="mb-4"
         onClick={() => {
-          LedgerFormAction.open();
+          Modal.show(LedgerFormModal);
         }}
       >
         新建一个账本

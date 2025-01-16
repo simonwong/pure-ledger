@@ -1,6 +1,6 @@
 import { SVGProps, useMemo } from 'react';
-import { Button } from '@easy-shadcn/react';
-import { LedgerFormAction } from '@/features/ledger/ledger-form';
+import { Button, Modal } from '@easy-shadcn/react';
+import { LedgerFormModal } from '@/features/ledger/ledger-form';
 
 const DancingSvg = (props: SVGProps<SVGSVGElement>) => (
   <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 768" version="1.1">
@@ -421,7 +421,7 @@ const EmptyPage: React.FC<EmptyPageProps> = () => {
       <Button
         className="mb-4"
         onClick={() => {
-          LedgerFormAction.open();
+          Modal.show(LedgerFormModal);
         }}
       >
         新建一个账本

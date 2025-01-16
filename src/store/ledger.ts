@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as LedgersService from '@/infrastructure/ledger/api';
+import { useGlobalStore } from './global';
 
 export const useQueryLedgers = () => {
   return useQuery({
@@ -20,11 +21,13 @@ export const useQueryLedger = (ledgerId: number | null) => {
 
 export const useMutationCreateLedger = () => {
   const queryClient = useQueryClient();
+  const switchSelect = useGlobalStore((state) => state.switchSelect);
 
   return useMutation({
     mutationFn: LedgersService.createLedger,
-    onSuccess: () => {
+    onSuccess: (createdId) => {
       queryClient.invalidateQueries({ queryKey: ['ledgers'] });
+      switchSelect(createdId);
     },
   });
 };
@@ -49,11 +52,13 @@ export const useMutationUpdateLedger = () => {
  */
 export const useMutationDeleteLedger = () => {
   const queryClient = useQueryClient();
+  const switchSelect = useGlobalStore((state) => state.switchSelect);
 
   return useMutation({
     mutationFn: LedgersService.deleteLedger,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['ledgers'] });
+      switchSelect(null);
     },
   });
 };
